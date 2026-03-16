@@ -54,21 +54,18 @@ Figma, Airbnb, Toast, Headway, Calendly, tvScientific, OpenTable, Twilio, Alvys
 
 2. **Add to `src/shared/config.ts`:**
    ```typescript
-   { name: 'Rocket Money', id: 'truebill', visited: false },
+   { name: 'Rocket Money', id: 'truebill', seed: false },
    ```
-   - `visited: false` — scores ALL current jobs on first run (use when you want to evaluate a company's full catalog)
-   - `visited: true` — seeds existing jobs and only scores NEW postings going forward
+   - `seed: false` — scores ALL current jobs on first run (use when you want to evaluate a company's full catalog)
+   - `seed: true` — seeds existing jobs silently on first run (use for companies you already watch)
+
+   Either way, subsequent runs automatically only process new postings — no manual changes needed.
 
 3. **Commit and push** — the next GitHub Actions run will pick it up automatically. Or trigger a manual run via `workflow_dispatch`.
 
-4. **After the first run**, flip to `visited: true` so future runs only surface new postings:
-   ```typescript
-   { name: 'Rocket Money', id: 'truebill', visited: true },
-   ```
-
 ## How It Works
 
-**Visited vs. unvisited companies:** Companies marked `visited: true` get their existing catalog "seeded" on first run (`is_seed = 1`) so those jobs are never scored or notified. Only net-new postings flow through the pipeline. Unvisited companies (added later) get all jobs scored on first ingestion.
+**Seed vs. evaluate:** Companies marked `seed: true` get their existing catalog silently ingested on first run (`is_seed = 1`) — those jobs are never scored or notified. Use this for companies you already watch. Companies with `seed: false` get all matching jobs scored on first run. Either way, after the first run the system is self-managing: `jobExists` dedup ensures only genuinely new postings flow through the pipeline.
 
 **Keyword filtering:** Job titles are matched against include keywords (e.g. `software engineer`, `frontend`, `react`, `typescript`) and exclude keywords (e.g. `manager`, `data scientist`, `intern`). Exclude takes priority.
 

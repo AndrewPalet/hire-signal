@@ -1,20 +1,20 @@
 export interface Company {
   name: string;
   id: string;
-  visited: boolean;
+  seed: boolean;
 }
 
 export const COMPANIES: Company[] = [
-  { name: 'Figma', id: 'figma', visited: true },
-  { name: 'Airbnb', id: 'airbnb', visited: true },
-  { name: 'Toast', id: 'toast', visited: true },
-  { name: 'Headway', id: 'headway', visited: true },
-  { name: 'Calendly', id: 'calendly', visited: true },
-  { name: 'tvScientific', id: 'tvscientificpoweredbypinterest', visited: true },
-  { name: 'OpenTable', id: 'opentable', visited: true },
-  { name: 'Twilio', id: 'twilio', visited: true },
-  { name: 'Alvys', id: 'alvys', visited: true },
-  { name: 'Rocket Money', id: 'truebill', visited: false },
+  { name: 'Figma', id: 'figma', seed: true },
+  { name: 'Airbnb', id: 'airbnb', seed: true },
+  { name: 'Toast', id: 'toast', seed: true },
+  { name: 'Headway', id: 'headway', seed: true },
+  { name: 'Calendly', id: 'calendly', seed: true },
+  { name: 'tvScientific', id: 'tvscientificpoweredbypinterest', seed: true },
+  { name: 'OpenTable', id: 'opentable', seed: true },
+  { name: 'Twilio', id: 'twilio', seed: true },
+  { name: 'Alvys', id: 'alvys', seed: true },
+  { name: 'Rocket Money', id: 'truebill', seed: false },
 ];
 
 export const INCLUDE_KEYWORDS: string[] = [

@@ -39,11 +39,11 @@ async function main() {
       await sleep(DELAY_BETWEEN_COMPANIES_MS);
     }
 
-    const isSeedRun = company.visited && !(await db.companyHasJobs(company.id));
+    const isSeedRun = company.seed && !(await db.companyHasJobs(company.id));
     const jobs = await fetchJobs(company.id);
 
     const seedLabel = isSeedRun ? ' — seed run' : '';
-    console.log(`→ ${company.name} (${company.id}) [visited${seedLabel}]`);
+    console.log(`→ ${company.name} (${company.id})${seedLabel}`);
     console.log(`  Found ${jobs.length} total listings`);
 
     let newCount = 0;
