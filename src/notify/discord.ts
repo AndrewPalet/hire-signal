@@ -36,7 +36,7 @@ function truncate(str: string, max: number): string {
 function buildJobField(job: JobRow): { name: string; value: string } {
   const lines = [
     job.location ? `📍 ${job.location}` : null,
-    `Loc: ${job.location_score ?? '?'} | Stack: ${job.stack_score ?? '?'} | Comp: ${job.comp_score ?? '?'} | **Overall: ${job.overall_score ?? '?'}**`,
+    `Fit: ${job.role_fit_score ?? '?'} | Loc: ${job.location_score ?? '?'} | Stack: ${job.stack_score ?? '?'} | Comp: ${job.comp_score ?? '?'} | **Overall: ${job.overall_score ?? '?'}**`,
     job.overall_reasoning ? `> ${job.overall_reasoning}` : null,
     `[Apply →](${job.url})`,
   ]

@@ -49,6 +49,8 @@ const CREATE_INDEXES = `
 `;
 
 const SCORING_COLUMNS = [
+  'role_fit_score INTEGER',
+  'role_fit_reasoning TEXT',
   'location_score INTEGER',
   'location_reasoning TEXT',
   'stack_score INTEGER',
@@ -129,6 +131,8 @@ class LocalDatabase implements DatabaseAdapter {
     this.db
       .prepare(
         `UPDATE jobs SET
+        role_fit_score = @role_fit_score,
+        role_fit_reasoning = @role_fit_reasoning,
         location_score = @location_score,
         location_reasoning = @location_reasoning,
         stack_score = @stack_score,
@@ -273,6 +277,8 @@ class TursoDatabase implements DatabaseAdapter {
   async saveJobScore(id: string, score: ScoreResult): Promise<void> {
     await this.client.execute({
       sql: `UPDATE jobs SET
+        role_fit_score = :role_fit_score,
+        role_fit_reasoning = :role_fit_reasoning,
         location_score = :location_score,
         location_reasoning = :location_reasoning,
         stack_score = :stack_score,
@@ -286,6 +292,8 @@ class TursoDatabase implements DatabaseAdapter {
       WHERE id = :id`,
       args: {
         id,
+        role_fit_score: score.role_fit_score,
+        role_fit_reasoning: score.role_fit_reasoning,
         location_score: score.location_score,
         location_reasoning: score.location_reasoning,
         stack_score: score.stack_score,
@@ -355,6 +363,8 @@ function rowToJobRow(row: Record<string, unknown>): JobRow {
     is_seed: Number(row.is_seed),
     applied: Number(row.applied),
     notified: Number(row.notified),
+    role_fit_score: row.role_fit_score == null ? null : Number(row.role_fit_score),
+    role_fit_reasoning: row.role_fit_reasoning == null ? null : String(row.role_fit_reasoning),
     location_score: row.location_score == null ? null : Number(row.location_score),
     location_reasoning: row.location_reasoning == null ? null : String(row.location_reasoning),
     stack_score: row.stack_score == null ? null : Number(row.stack_score),

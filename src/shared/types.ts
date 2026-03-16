@@ -13,6 +13,8 @@ export interface JobRow {
   is_seed: number;
   applied: number;
   notified: number;
+  role_fit_score?: number | null;
+  role_fit_reasoning?: string | null;
   location_score?: number | null;
   location_reasoning?: string | null;
   stack_score?: number | null;
@@ -26,6 +28,8 @@ export interface JobRow {
 }
 
 export interface ScoreResult {
+  role_fit_score: number;
+  role_fit_reasoning: string;
   location_score: number;
   location_reasoning: string;
   stack_score: number;
