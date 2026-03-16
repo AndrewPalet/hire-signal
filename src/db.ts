@@ -18,6 +18,55 @@ export interface JobRow {
   is_seed: number;
   applied: number;
   notified: number;
+  location_score?: number | null;
+  location_reasoning?: string | null;
+  stack_score?: number | null;
+  stack_reasoning?: string | null;
+  comp_score?: number | null;
+  comp_reasoning?: string | null;
+  overall_score?: number | null;
+  overall_reasoning?: string | null;
+  dealbreaker?: string | null;
+  scored_at?: string | null;
+}
+
+export interface ScoreResult {
+  location_score: number;
+  location_reasoning: string;
+  stack_score: number;
+  stack_reasoning: string;
+  comp_score: number;
+  comp_reasoning: string;
+  overall_score: number;
+  overall_reasoning: string;
+  dealbreaker: string | null;
+}
+
+const SCORING_COLUMNS = [
+  'location_score INTEGER',
+  'location_reasoning TEXT',
+  'stack_score INTEGER',
+  'stack_reasoning TEXT',
+  'comp_score INTEGER',
+  'comp_reasoning TEXT',
+  'overall_score INTEGER',
+  'overall_reasoning TEXT',
+  'dealbreaker TEXT',
+  'scored_at TEXT',
+];
+
+function runScoringMigration(db: Database.Database): void {
+  const existing = db
+    .prepare('PRAGMA table_info(jobs)')
+    .all()
+    .map((col) => (col as { name: string }).name);
+
+  for (const colDef of SCORING_COLUMNS) {
+    const colName = colDef.split(' ')[0];
+    if (!existing.includes(colName)) {
+      db.exec(`ALTER TABLE jobs ADD COLUMN ${colDef}`);
+    }
+  }
 }
 
 export function initDb(): Database.Database {
@@ -48,6 +97,8 @@ export function initDb(): Database.Database {
     CREATE INDEX IF NOT EXISTS idx_jobs_passed_filter ON jobs(passed_filter);
     CREATE INDEX IF NOT EXISTS idx_jobs_is_seed ON jobs(is_seed);
   `);
+
+  runScoringMigration(db);
 
   return db;
 }
@@ -83,10 +134,38 @@ export function updateJobDescription(db: Database.Database, id: string, descript
   db.prepare('UPDATE jobs SET description = ? WHERE id = ?').run(description, id);
 }
 
+export function getUnscoredJobs(db: Database.Database, limit = 50): JobRow[] {
+  return db
+    .prepare(
+      `SELECT * FROM jobs
+       WHERE passed_filter = 1 AND is_seed = 0 AND scored_at IS NULL
+       LIMIT ?`,
+    )
+    .all(limit) as JobRow[];
+}
+
+export function saveJobScore(db: Database.Database, jobId: string, score: ScoreResult): void {
+  db.prepare(
+    `UPDATE jobs SET
+      location_score = @location_score,
+      location_reasoning = @location_reasoning,
+      stack_score = @stack_score,
+      stack_reasoning = @stack_reasoning,
+      comp_score = @comp_score,
+      comp_reasoning = @comp_reasoning,
+      overall_score = @overall_score,
+      overall_reasoning = @overall_reasoning,
+      dealbreaker = @dealbreaker,
+      scored_at = datetime('now')
+    WHERE id = @id`,
+  ).run({ ...score, id: jobId });
+}
+
 export function getStats(db: Database.Database): {
   total: number;
   filtered: number;
   seeded: number;
+  scored: number;
 } {
   const total = (db.prepare('SELECT count(*) as c FROM jobs').get() as { c: number }).c;
   const filtered = (
@@ -95,5 +174,8 @@ export function getStats(db: Database.Database): {
   const seeded = (
     db.prepare('SELECT count(*) as c FROM jobs WHERE is_seed = 1').get() as { c: number }
   ).c;
-  return { total, filtered, seeded };
+  const scored = (
+    db.prepare('SELECT count(*) as c FROM jobs WHERE scored_at IS NOT NULL').get() as { c: number }
+  ).c;
+  return { total, filtered, seeded, scored };
 }

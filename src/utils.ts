@@ -14,3 +14,8 @@ export function stripHtml(html: string): string {
 
   return text.trim();
 }
+
+export function truncateDescription(desc: string, maxChars = 8000): string {
+  if (desc.length <= maxChars) return desc;
+  return desc.slice(0, maxChars) + '\n\n[Description truncated]';
+}

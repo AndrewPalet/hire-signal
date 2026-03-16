@@ -43,6 +43,7 @@ This surfaces any public Greenhouse board pages indexed by search engines.
 ## Project Commands
 
 - `yarn monitor` — run the job monitor
+- `yarn score` — run AI fit scoring on unscored jobs
 - `yarn format` — format with prettier
 - `yarn lint` — lint with eslint
 - `npx tsc --noEmit` — type check

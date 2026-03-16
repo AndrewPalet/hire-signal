@@ -64,3 +64,7 @@ export const EXCLUDE_KEYWORDS: string[] = [
 export const GREENHOUSE_BASE_URL = 'https://boards-api.greenhouse.io/v1/boards';
 export const DELAY_BETWEEN_COMPANIES_MS = 1000;
 export const DB_PATH = 'data/jobs.db';
+
+export const SCORING_MODEL = 'claude-sonnet-4-20250514';
+export const SCORING_THRESHOLD = 7;
+export const SCORING_BRIEF_PATH = 'profile/scoring-brief.md';
