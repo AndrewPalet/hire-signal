@@ -44,6 +44,8 @@ This surfaces any public Greenhouse board pages indexed by search engines.
 
 - `yarn monitor` — run the job monitor
 - `yarn score` — run AI fit scoring on unscored jobs
+- `yarn notify` — send Discord notifications for high-scoring jobs
+- `yarn run-all` — run monitor, score, and notify in sequence
 - `yarn format` — format with prettier
 - `yarn lint` — lint with eslint
 - `npx tsc --noEmit` — type check

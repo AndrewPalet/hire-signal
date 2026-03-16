@@ -64,7 +64,9 @@ function loadScoringBrief(): string {
 
 export function buildScoringPrompt(job: JobRow): { system: string; user: string } {
   const brief = loadScoringBrief();
-  const description = job.description ? truncateDescription(job.description) : 'No description available.';
+  const description = job.description
+    ? truncateDescription(job.description)
+    : 'No description available.';
 
   const user = `## Candidate Profile
 ${brief}
@@ -100,8 +102,7 @@ export async function scoreJob(client: Anthropic, job: JobRow): Promise<ScoreRes
         messages: [{ role: 'user', content: user }],
       });
 
-      const text =
-        response.content[0].type === 'text' ? response.content[0].text : '';
+      const text = response.content[0].type === 'text' ? response.content[0].text : '';
 
       const parsed = JSON.parse(text) as ScoreResult;
 

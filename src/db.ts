@@ -161,6 +161,22 @@ export function saveJobScore(db: Database.Database, jobId: string, score: ScoreR
   ).run({ ...score, id: jobId });
 }
 
+export function getNotifiableJobs(db: Database.Database): JobRow[] {
+  return db
+    .prepare(
+      `SELECT * FROM jobs
+       WHERE overall_score >= 7 AND notified = 0
+       ORDER BY company_name, overall_score DESC`,
+    )
+    .all() as JobRow[];
+}
+
+export function markJobsNotified(db: Database.Database, jobIds: string[]): void {
+  if (jobIds.length === 0) return;
+  const placeholders = jobIds.map(() => '?').join(', ');
+  db.prepare(`UPDATE jobs SET notified = 1 WHERE id IN (${placeholders})`).run(...jobIds);
+}
+
 export function getStats(db: Database.Database): {
   total: number;
   filtered: number;

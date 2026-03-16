@@ -23,9 +23,9 @@ GitHub Actions (cron every 6 hours + manual dispatch)
 
 | Step | Ticket | Description | Status |
 |------|--------|-------------|--------|
-| 1. Ingestion | [PAL-1](https://linear.app/weill-cornell-medicine/issue/PAL-1) | Poll Greenhouse APIs, keyword filter, store in SQLite | In Progress |
-| 2. AI Scoring | [PAL-2](https://linear.app/weill-cornell-medicine/issue/PAL-2) | Score unscored jobs via Claude API (Sonnet 4) on location/stack/comp fit | Backlog |
-| 3. Notifications | [PAL-3](https://linear.app/weill-cornell-medicine/issue/PAL-3) | Rich Discord embeds for 7+ scored jobs | Backlog |
+| 1. Ingestion | [PAL-1](https://linear.app/weill-cornell-medicine/issue/PAL-1) | Poll Greenhouse APIs, keyword filter, store in SQLite | Done |
+| 2. AI Scoring | [PAL-2](https://linear.app/weill-cornell-medicine/issue/PAL-2) | Score unscored jobs via Claude API (Sonnet 4) on location/stack/comp fit | Done |
+| 3. Notifications | [PAL-3](https://linear.app/weill-cornell-medicine/issue/PAL-3) | Rich Discord embeds for 7+ scored jobs | Done |
 | 4. Cloud Deploy | [PAL-5](https://linear.app/weill-cornell-medicine/issue/PAL-5) | GitHub Actions cron + Turso migration | Backlog |
 | 5. Notion Sync | [PAL-6](https://linear.app/weill-cornell-medicine/issue/PAL-6) | Auto-create Notion rows for application tracking | Backlog |
 | Weekly Digest | [PAL-4](https://linear.app/weill-cornell-medicine/issue/PAL-4) | Weekly summary notification mode | Backlog |
@@ -57,6 +57,15 @@ yarn install
 
 # Run the monitor (seeds on first run)
 yarn monitor
+
+# Score unscored jobs
+yarn score
+
+# Send Discord notifications for 7+ scored jobs
+yarn notify
+
+# Run the full pipeline (monitor → score → notify)
+yarn run-all
 ```
 
 ### Prerequisites
@@ -82,8 +91,8 @@ yarn format
 - **Language:** TypeScript (ESM)
 - **Runtime:** Node.js via `tsx` (no build step)
 - **Database:** SQLite via `better-sqlite3` (local) / Turso via `@libsql/client` (cloud, planned)
-- **AI:** Claude API — Sonnet 4 via `@anthropic-ai/sdk` (planned)
-- **Notifications:** Discord webhooks (planned)
+- **AI:** Claude API — Sonnet 4 via `@anthropic-ai/sdk`
+- **Notifications:** Discord webhooks
 - **Tracking:** Notion API (planned)
 - **CI/CD:** GitHub Actions (planned)
 

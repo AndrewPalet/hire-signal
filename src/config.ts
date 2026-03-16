@@ -68,3 +68,5 @@ export const DB_PATH = 'data/jobs.db';
 export const SCORING_MODEL = 'claude-sonnet-4-20250514';
 export const SCORING_THRESHOLD = 7;
 export const SCORING_BRIEF_PATH = 'profile/scoring-brief.md';
+
+export const NOTIFICATION_THRESHOLD = 7;
