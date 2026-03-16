@@ -1,4 +1,4 @@
-import { COMPANIES, DELAY_BETWEEN_COMPANIES_MS } from './config.js';
+import { COMPANIES, DELAY_BETWEEN_COMPANIES_MS } from '../shared/config.js';
 import {
   initDb,
   jobExists,
@@ -6,10 +6,10 @@ import {
   insertJob,
   updateJobDescription,
   getStats,
-} from './db.js';
+} from '../shared/db.js';
 import { passesFilter } from './filter.js';
 import { fetchJobs, fetchJobDetail } from './greenhouse.js';
-import { stripHtml } from './utils.js';
+import { stripHtml } from '../shared/utils.js';
 
 interface MatchInfo {
   title: string;

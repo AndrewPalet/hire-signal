@@ -1,4 +1,4 @@
-import { GREENHOUSE_BASE_URL } from './config.js';
+import { GREENHOUSE_BASE_URL } from '../shared/config.js';
 
 export interface GreenhouseJobSummary {
   id: number;

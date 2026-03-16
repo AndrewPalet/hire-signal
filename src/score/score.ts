@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import Anthropic from '@anthropic-ai/sdk';
-import { SCORING_MODEL, SCORING_THRESHOLD } from './config.js';
-import { initDb, getUnscoredJobs, saveJobScore, getStats } from './db.js';
+import { SCORING_MODEL, SCORING_THRESHOLD } from '../shared/config.js';
+import { initDb, getUnscoredJobs, saveJobScore, getStats } from '../shared/db.js';
 import { scoreJob } from './claude.js';
 
 function sleep(ms: number): Promise<void> {

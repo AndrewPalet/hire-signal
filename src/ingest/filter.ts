@@ -1,4 +1,4 @@
-import { EXCLUDE_KEYWORDS, INCLUDE_KEYWORDS } from './config.js';
+import { EXCLUDE_KEYWORDS, INCLUDE_KEYWORDS } from '../shared/config.js';
 
 export function passesFilter(title: string): boolean {
   const lower = title.toLowerCase();

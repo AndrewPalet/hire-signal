@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { initDb, getNotifiableJobs, markJobsNotified } from './db.js';
+import { initDb, getNotifiableJobs, markJobsNotified } from '../shared/db.js';
 import { buildEmbeds, sendWebhook } from './discord.js';
 
 async function main() {
