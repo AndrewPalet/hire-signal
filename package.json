@@ -8,6 +8,7 @@
     "score": "tsx src/score/score.ts",
     "notify": "tsx src/notify/notify.ts",
     "run-all": "tsx src/ingest/monitor.ts; tsx src/score/score.ts; tsx src/notify/notify.ts",
+    "alert": "tsx src/shared/alert.ts",
     "lint": "eslint src/",
     "format": "prettier --write src/",
     "format:check": "prettier --check src/"

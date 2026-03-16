@@ -71,6 +71,8 @@ export const SCORING_BRIEF_PATH = 'profile/scoring-brief.md';
 
 export const NOTIFICATION_THRESHOLD = 7;
 
+export const DISCORD_ERROR_WEBHOOK_URL = process.env.DISCORD_ERROR_WEBHOOK_URL ?? '';
+
 export const DB_BACKEND = (process.env.DB_BACKEND ?? 'local') as 'local' | 'turso';
 export const TURSO_DATABASE_URL = process.env.TURSO_DATABASE_URL ?? '';
 export const TURSO_AUTH_TOKEN = process.env.TURSO_AUTH_TOKEN ?? '';

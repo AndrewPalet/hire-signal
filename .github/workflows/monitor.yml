@@ -1,0 +1,54 @@
+name: Job Monitor Pipeline
+
+on:
+  schedule:
+    # Mon-Wed: 8 AM CT and 1 PM CT
+    - cron: '0 13,18 * * 1,2,3'
+    # Thu-Fri: 8 AM CT only
+    - cron: '0 13 * * 4,5'
+    # Sunday: 6 PM CT
+    - cron: '0 23 * * 0'
+  workflow_dispatch:
+
+concurrency:
+  group: job-monitor
+  cancel-in-progress: false
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    env:
+      DB_BACKEND: turso
+      TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+      TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      DISCORD_ERROR_WEBHOOK_URL: ${{ secrets.DISCORD_ERROR_WEBHOOK_URL }}
+      SCORING_BRIEF_B64: ${{ secrets.SCORING_BRIEF_B64 }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'yarn'
+      - run: yarn install --frozen-lockfile
+
+      - name: Monitor
+        id: monitor
+        continue-on-error: true
+        run: yarn monitor
+
+      - name: Score
+        id: score
+        continue-on-error: true
+        run: yarn score
+
+      - name: Notify
+        id: notify
+        continue-on-error: true
+        run: yarn notify
+
+      - name: Alert on failure
+        if: always() && (steps.monitor.outcome == 'failure' || steps.score.outcome == 'failure' || steps.notify.outcome == 'failure')
+        run: yarn alert "${{ steps.monitor.outcome }}" "${{ steps.score.outcome }}" "${{ steps.notify.outcome }}"
