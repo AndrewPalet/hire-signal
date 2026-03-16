@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { initDb, getNotifiableJobs, markJobsNotified } from '../shared/db.js';
+import { createDatabase } from '../shared/db.js';
 import { buildEmbeds, sendWebhook } from './discord.js';
 
 async function main() {
@@ -10,8 +10,8 @@ async function main() {
     process.exit(1);
   }
 
-  const db = initDb();
-  const jobs = getNotifiableJobs(db);
+  const db = await createDatabase();
+  const jobs = await db.getNotifiableJobs();
 
   const runTime = new Date().toISOString();
   console.log('====================================================');
@@ -21,7 +21,7 @@ async function main() {
 
   if (jobs.length === 0) {
     console.log('  No notifiable jobs found. Nothing to do.');
-    db.close();
+    await db.close();
     return;
   }
 
@@ -54,7 +54,7 @@ async function main() {
 
   const allSucceeded = results.every((r) => r.success);
   if (allSucceeded) {
-    markJobsNotified(db, jobIds);
+    await db.markJobsNotified(jobIds);
     notified = jobs.length;
   } else {
     // If some batches failed, still mark jobs notified for successful portion
@@ -64,7 +64,7 @@ async function main() {
       const ratio = successfulBatches / totalBatches;
       const count = Math.floor(jobs.length * ratio);
       const partialIds = jobIds.slice(0, count);
-      markJobsNotified(db, partialIds);
+      await db.markJobsNotified(partialIds);
       notified = count;
       failed = jobs.length - count;
     } else if (successfulBatches === 0) {
@@ -78,7 +78,7 @@ async function main() {
   console.log(`  Batches sent:  ${batchesSent}`);
   console.log('====================================================');
 
-  db.close();
+  await db.close();
 }
 
 main().catch((err) => {

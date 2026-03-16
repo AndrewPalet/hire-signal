@@ -1,12 +1,6 @@
+import 'dotenv/config';
 import { COMPANIES, DELAY_BETWEEN_COMPANIES_MS } from '../shared/config.js';
-import {
-  initDb,
-  jobExists,
-  companyHasJobs,
-  insertJob,
-  updateJobDescription,
-  getStats,
-} from '../shared/db.js';
+import { createDatabase } from '../shared/db.js';
 import { passesFilter } from './filter.js';
 import { fetchJobs, fetchJobDetail } from './greenhouse.js';
 import { stripHtml } from '../shared/utils.js';
@@ -24,7 +18,7 @@ function sleep(ms: number): Promise<void> {
 }
 
 async function main() {
-  const db = initDb();
+  const db = await createDatabase();
   const newMatches: MatchInfo[] = [];
 
   const runTime = new Date().toISOString();
@@ -45,7 +39,7 @@ async function main() {
       await sleep(DELAY_BETWEEN_COMPANIES_MS);
     }
 
-    const isSeedRun = company.visited && !companyHasJobs(db, company.id);
+    const isSeedRun = company.visited && !(await db.companyHasJobs(company.id));
     const jobs = await fetchJobs(company.id);
 
     const seedLabel = isSeedRun ? ' — seed run' : '';
@@ -59,7 +53,7 @@ async function main() {
     for (const job of jobs) {
       const id = `greenhouse_${company.id}_${job.id}`;
 
-      if (jobExists(db, id)) {
+      if (await db.jobExists(id)) {
         alreadySeen++;
         continue;
       }
@@ -68,7 +62,7 @@ async function main() {
       newCount++;
       if (passes) matchCount++;
 
-      insertJob(db, {
+      await db.insertJob({
         id,
         external_id: job.id,
         company_name: company.name,
@@ -86,7 +80,7 @@ async function main() {
         const detail = await fetchJobDetail(company.id, job.id);
         if (detail?.content) {
           const stripped = stripHtml(detail.content);
-          updateJobDescription(db, id, stripped);
+          await db.updateJobDescription(id, stripped);
         }
 
         if (!isSeedRun) {
@@ -134,7 +128,7 @@ async function main() {
     console.log('😴 No new matching jobs since last run.\n');
   }
 
-  const stats = getStats(db);
+  const stats = await db.getStats();
 
   console.log('────────────────────────────────────────────────────');
   if (totalSeeded > 0) {
@@ -149,7 +143,7 @@ async function main() {
   );
   console.log('====================================================');
 
-  db.close();
+  await db.close();
 }
 
 main().catch((err) => {

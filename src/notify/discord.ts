@@ -1,4 +1,4 @@
-import { JobRow } from '../shared/db.js';
+import type { JobRow } from '../shared/types.js';
 
 export interface DiscordEmbed {
   title: string;

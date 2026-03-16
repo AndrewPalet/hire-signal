@@ -1,46 +1,52 @@
 import Database from 'better-sqlite3';
+import { createClient, type Client } from '@libsql/client';
 import { mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
-import { DB_PATH } from './config.js';
+import { DB_PATH, DB_BACKEND, TURSO_DATABASE_URL, TURSO_AUTH_TOKEN } from './config.js';
+import type { JobRow, ScoreResult, JobInput, DbStats } from './types.js';
 
-export interface JobRow {
-  id: string;
-  external_id: number;
-  company_name: string;
-  company_id: string;
-  title: string;
-  location: string | null;
-  url: string;
-  description: string | null;
-  posted_at: string | null;
-  first_seen_at?: string;
-  passed_filter: number;
-  is_seed: number;
-  applied: number;
-  notified: number;
-  location_score?: number | null;
-  location_reasoning?: string | null;
-  stack_score?: number | null;
-  stack_reasoning?: string | null;
-  comp_score?: number | null;
-  comp_reasoning?: string | null;
-  overall_score?: number | null;
-  overall_reasoning?: string | null;
-  dealbreaker?: string | null;
-  scored_at?: string | null;
+export type { JobRow, ScoreResult, JobInput, DbStats };
+
+export interface DatabaseAdapter {
+  init(): Promise<void>;
+  jobExists(id: string): Promise<boolean>;
+  companyHasJobs(companyId: string): Promise<boolean>;
+  insertJob(job: JobInput): Promise<void>;
+  updateJobDescription(id: string, description: string): Promise<void>;
+  getUnscoredJobs(limit?: number): Promise<JobRow[]>;
+  saveJobScore(id: string, score: ScoreResult): Promise<void>;
+  getNotifiableJobs(): Promise<JobRow[]>;
+  markJobsNotified(ids: string[]): Promise<void>;
+  getStats(): Promise<DbStats>;
+  close(): Promise<void>;
 }
 
-export interface ScoreResult {
-  location_score: number;
-  location_reasoning: string;
-  stack_score: number;
-  stack_reasoning: string;
-  comp_score: number;
-  comp_reasoning: string;
-  overall_score: number;
-  overall_reasoning: string;
-  dealbreaker: string | null;
-}
+// ── Shared SQL ──────────────────────────────────────────────────────────
+
+const CREATE_TABLE = `
+  CREATE TABLE IF NOT EXISTS jobs (
+    id TEXT PRIMARY KEY,
+    external_id INTEGER NOT NULL,
+    company_name TEXT NOT NULL,
+    company_id TEXT NOT NULL,
+    title TEXT NOT NULL,
+    location TEXT,
+    url TEXT NOT NULL,
+    description TEXT,
+    posted_at TEXT,
+    first_seen_at TEXT NOT NULL DEFAULT (datetime('now')),
+    passed_filter INTEGER NOT NULL DEFAULT 0,
+    is_seed INTEGER NOT NULL DEFAULT 0,
+    applied INTEGER DEFAULT 0,
+    notified INTEGER DEFAULT 0
+  );
+`;
+
+const CREATE_INDEXES = `
+  CREATE INDEX IF NOT EXISTS idx_jobs_company_id ON jobs(company_id);
+  CREATE INDEX IF NOT EXISTS idx_jobs_passed_filter ON jobs(passed_filter);
+  CREATE INDEX IF NOT EXISTS idx_jobs_is_seed ON jobs(is_seed);
+`;
 
 const SCORING_COLUMNS = [
   'location_score INTEGER',
@@ -55,143 +61,317 @@ const SCORING_COLUMNS = [
   'scored_at TEXT',
 ];
 
-function runScoringMigration(db: Database.Database): void {
-  const existing = db
-    .prepare('PRAGMA table_info(jobs)')
-    .all()
-    .map((col) => (col as { name: string }).name);
+// ── LocalDatabase (better-sqlite3) ─────────────────────────────────────
 
-  for (const colDef of SCORING_COLUMNS) {
-    const colName = colDef.split(' ')[0];
-    if (!existing.includes(colName)) {
-      db.exec(`ALTER TABLE jobs ADD COLUMN ${colDef}`);
+class LocalDatabase implements DatabaseAdapter {
+  private db!: Database.Database;
+
+  async init(): Promise<void> {
+    mkdirSync(dirname(DB_PATH), { recursive: true });
+    this.db = new Database(DB_PATH);
+    this.db.pragma('journal_mode = WAL');
+    this.db.exec(CREATE_TABLE);
+    this.db.exec(CREATE_INDEXES);
+    this.runScoringMigration();
+  }
+
+  private runScoringMigration(): void {
+    const existing = this.db
+      .prepare('PRAGMA table_info(jobs)')
+      .all()
+      .map((col) => (col as { name: string }).name);
+
+    for (const colDef of SCORING_COLUMNS) {
+      const colName = colDef.split(' ')[0];
+      if (!existing.includes(colName)) {
+        this.db.exec(`ALTER TABLE jobs ADD COLUMN ${colDef}`);
+      }
     }
+  }
+
+  async jobExists(id: string): Promise<boolean> {
+    return this.db.prepare('SELECT 1 FROM jobs WHERE id = ?').get(id) !== undefined;
+  }
+
+  async companyHasJobs(companyId: string): Promise<boolean> {
+    return this.db.prepare('SELECT 1 FROM jobs WHERE company_id = ?').get(companyId) !== undefined;
+  }
+
+  async insertJob(job: JobInput): Promise<void> {
+    this.db
+      .prepare(
+        `INSERT OR IGNORE INTO jobs (
+        id, external_id, company_name, company_id, title, location, url,
+        description, posted_at, passed_filter, is_seed
+      ) VALUES (
+        @id, @external_id, @company_name, @company_id, @title, @location, @url,
+        @description, @posted_at, @passed_filter, @is_seed
+      )`,
+      )
+      .run(job);
+  }
+
+  async updateJobDescription(id: string, description: string): Promise<void> {
+    this.db.prepare('UPDATE jobs SET description = ? WHERE id = ?').run(description, id);
+  }
+
+  async getUnscoredJobs(limit = 50): Promise<JobRow[]> {
+    return this.db
+      .prepare(
+        `SELECT * FROM jobs
+       WHERE passed_filter = 1 AND is_seed = 0 AND scored_at IS NULL
+       LIMIT ?`,
+      )
+      .all(limit) as JobRow[];
+  }
+
+  async saveJobScore(id: string, score: ScoreResult): Promise<void> {
+    this.db
+      .prepare(
+        `UPDATE jobs SET
+        location_score = @location_score,
+        location_reasoning = @location_reasoning,
+        stack_score = @stack_score,
+        stack_reasoning = @stack_reasoning,
+        comp_score = @comp_score,
+        comp_reasoning = @comp_reasoning,
+        overall_score = @overall_score,
+        overall_reasoning = @overall_reasoning,
+        dealbreaker = @dealbreaker,
+        scored_at = datetime('now')
+      WHERE id = @id`,
+      )
+      .run({ ...score, id });
+  }
+
+  async getNotifiableJobs(): Promise<JobRow[]> {
+    return this.db
+      .prepare(
+        `SELECT * FROM jobs
+       WHERE overall_score >= 7 AND notified = 0
+       ORDER BY company_name, overall_score DESC`,
+      )
+      .all() as JobRow[];
+  }
+
+  async markJobsNotified(ids: string[]): Promise<void> {
+    if (ids.length === 0) return;
+    const placeholders = ids.map(() => '?').join(', ');
+    this.db.prepare(`UPDATE jobs SET notified = 1 WHERE id IN (${placeholders})`).run(...ids);
+  }
+
+  async getStats(): Promise<DbStats> {
+    const total = (this.db.prepare('SELECT count(*) as c FROM jobs').get() as { c: number }).c;
+    const filtered = (
+      this.db.prepare('SELECT count(*) as c FROM jobs WHERE passed_filter = 1').get() as {
+        c: number;
+      }
+    ).c;
+    const seeded = (
+      this.db.prepare('SELECT count(*) as c FROM jobs WHERE is_seed = 1').get() as { c: number }
+    ).c;
+    const scored = (
+      this.db.prepare('SELECT count(*) as c FROM jobs WHERE scored_at IS NOT NULL').get() as {
+        c: number;
+      }
+    ).c;
+    return { total, filtered, seeded, scored };
+  }
+
+  async close(): Promise<void> {
+    this.db.close();
   }
 }
 
-export function initDb(): Database.Database {
-  mkdirSync(dirname(DB_PATH), { recursive: true });
+// ── TursoDatabase (@libsql/client) ─────────────────────────────────────
 
-  const db = new Database(DB_PATH);
-  db.pragma('journal_mode = WAL');
+class TursoDatabase implements DatabaseAdapter {
+  private client!: Client;
 
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS jobs (
-      id TEXT PRIMARY KEY,
-      external_id INTEGER NOT NULL,
-      company_name TEXT NOT NULL,
-      company_id TEXT NOT NULL,
-      title TEXT NOT NULL,
-      location TEXT,
-      url TEXT NOT NULL,
-      description TEXT,
-      posted_at TEXT,
-      first_seen_at TEXT NOT NULL DEFAULT (datetime('now')),
-      passed_filter INTEGER NOT NULL DEFAULT 0,
-      is_seed INTEGER NOT NULL DEFAULT 0,
-      applied INTEGER DEFAULT 0,
-      notified INTEGER DEFAULT 0
-    );
+  async init(): Promise<void> {
+    if (!TURSO_DATABASE_URL) {
+      throw new Error('TURSO_DATABASE_URL is required when DB_BACKEND=turso');
+    }
+    this.client = createClient({
+      url: TURSO_DATABASE_URL,
+      authToken: TURSO_AUTH_TOKEN || undefined,
+    });
+    await this.client.executeMultiple(`${CREATE_TABLE}\n${CREATE_INDEXES}`);
+    await this.runScoringMigration();
+  }
 
-    CREATE INDEX IF NOT EXISTS idx_jobs_company_id ON jobs(company_id);
-    CREATE INDEX IF NOT EXISTS idx_jobs_passed_filter ON jobs(passed_filter);
-    CREATE INDEX IF NOT EXISTS idx_jobs_is_seed ON jobs(is_seed);
-  `);
+  private async runScoringMigration(): Promise<void> {
+    const result = await this.client.execute('PRAGMA table_info(jobs)');
+    const existing = result.rows.map((row) => String(row.name));
 
-  runScoringMigration(db);
+    for (const colDef of SCORING_COLUMNS) {
+      const colName = colDef.split(' ')[0];
+      if (!existing.includes(colName)) {
+        await this.client.execute(`ALTER TABLE jobs ADD COLUMN ${colDef}`);
+      }
+    }
+  }
 
-  return db;
-}
+  async jobExists(id: string): Promise<boolean> {
+    const result = await this.client.execute({
+      sql: 'SELECT 1 FROM jobs WHERE id = ?',
+      args: [id],
+    });
+    return result.rows.length > 0;
+  }
 
-export function jobExists(db: Database.Database, id: string): boolean {
-  const row = db.prepare('SELECT 1 FROM jobs WHERE id = ?').get(id);
-  return row !== undefined;
-}
+  async companyHasJobs(companyId: string): Promise<boolean> {
+    const result = await this.client.execute({
+      sql: 'SELECT 1 FROM jobs WHERE company_id = ?',
+      args: [companyId],
+    });
+    return result.rows.length > 0;
+  }
 
-export function companyHasJobs(db: Database.Database, companyId: string): boolean {
-  const row = db.prepare('SELECT 1 FROM jobs WHERE company_id = ?').get(companyId);
-  return row !== undefined;
-}
+  async insertJob(job: JobInput): Promise<void> {
+    await this.client.execute({
+      sql: `INSERT OR IGNORE INTO jobs (
+        id, external_id, company_name, company_id, title, location, url,
+        description, posted_at, passed_filter, is_seed
+      ) VALUES (
+        :id, :external_id, :company_name, :company_id, :title, :location, :url,
+        :description, :posted_at, :passed_filter, :is_seed
+      )`,
+      args: {
+        id: job.id,
+        external_id: job.external_id,
+        company_name: job.company_name,
+        company_id: job.company_id,
+        title: job.title,
+        location: job.location,
+        url: job.url,
+        description: job.description,
+        posted_at: job.posted_at,
+        passed_filter: job.passed_filter,
+        is_seed: job.is_seed,
+      },
+    });
+  }
 
-export function insertJob(
-  db: Database.Database,
-  job: Omit<JobRow, 'first_seen_at' | 'applied' | 'notified'>,
-): void {
-  db.prepare(
-    `
-    INSERT OR IGNORE INTO jobs (
-      id, external_id, company_name, company_id, title, location, url,
-      description, posted_at, passed_filter, is_seed
-    ) VALUES (
-      @id, @external_id, @company_name, @company_id, @title, @location, @url,
-      @description, @posted_at, @passed_filter, @is_seed
-    )
-  `,
-  ).run(job);
-}
+  async updateJobDescription(id: string, description: string): Promise<void> {
+    await this.client.execute({
+      sql: 'UPDATE jobs SET description = ? WHERE id = ?',
+      args: [description, id],
+    });
+  }
 
-export function updateJobDescription(db: Database.Database, id: string, description: string): void {
-  db.prepare('UPDATE jobs SET description = ? WHERE id = ?').run(description, id);
-}
-
-export function getUnscoredJobs(db: Database.Database, limit = 50): JobRow[] {
-  return db
-    .prepare(
-      `SELECT * FROM jobs
+  async getUnscoredJobs(limit = 50): Promise<JobRow[]> {
+    const result = await this.client.execute({
+      sql: `SELECT * FROM jobs
        WHERE passed_filter = 1 AND is_seed = 0 AND scored_at IS NULL
        LIMIT ?`,
-    )
-    .all(limit) as JobRow[];
-}
+      args: [limit],
+    });
+    return result.rows.map(rowToJobRow);
+  }
 
-export function saveJobScore(db: Database.Database, jobId: string, score: ScoreResult): void {
-  db.prepare(
-    `UPDATE jobs SET
-      location_score = @location_score,
-      location_reasoning = @location_reasoning,
-      stack_score = @stack_score,
-      stack_reasoning = @stack_reasoning,
-      comp_score = @comp_score,
-      comp_reasoning = @comp_reasoning,
-      overall_score = @overall_score,
-      overall_reasoning = @overall_reasoning,
-      dealbreaker = @dealbreaker,
-      scored_at = datetime('now')
-    WHERE id = @id`,
-  ).run({ ...score, id: jobId });
-}
+  async saveJobScore(id: string, score: ScoreResult): Promise<void> {
+    await this.client.execute({
+      sql: `UPDATE jobs SET
+        location_score = :location_score,
+        location_reasoning = :location_reasoning,
+        stack_score = :stack_score,
+        stack_reasoning = :stack_reasoning,
+        comp_score = :comp_score,
+        comp_reasoning = :comp_reasoning,
+        overall_score = :overall_score,
+        overall_reasoning = :overall_reasoning,
+        dealbreaker = :dealbreaker,
+        scored_at = datetime('now')
+      WHERE id = :id`,
+      args: {
+        id,
+        location_score: score.location_score,
+        location_reasoning: score.location_reasoning,
+        stack_score: score.stack_score,
+        stack_reasoning: score.stack_reasoning,
+        comp_score: score.comp_score,
+        comp_reasoning: score.comp_reasoning,
+        overall_score: score.overall_score,
+        overall_reasoning: score.overall_reasoning,
+        dealbreaker: score.dealbreaker,
+      },
+    });
+  }
 
-export function getNotifiableJobs(db: Database.Database): JobRow[] {
-  return db
-    .prepare(
+  async getNotifiableJobs(): Promise<JobRow[]> {
+    const result = await this.client.execute(
       `SELECT * FROM jobs
        WHERE overall_score >= 7 AND notified = 0
        ORDER BY company_name, overall_score DESC`,
-    )
-    .all() as JobRow[];
+    );
+    return result.rows.map(rowToJobRow);
+  }
+
+  async markJobsNotified(ids: string[]): Promise<void> {
+    if (ids.length === 0) return;
+    const placeholders = ids.map(() => '?').join(', ');
+    await this.client.execute({
+      sql: `UPDATE jobs SET notified = 1 WHERE id IN (${placeholders})`,
+      args: ids,
+    });
+  }
+
+  async getStats(): Promise<DbStats> {
+    const [totalR, filteredR, seededR, scoredR] = await Promise.all([
+      this.client.execute('SELECT count(*) as c FROM jobs'),
+      this.client.execute('SELECT count(*) as c FROM jobs WHERE passed_filter = 1'),
+      this.client.execute('SELECT count(*) as c FROM jobs WHERE is_seed = 1'),
+      this.client.execute('SELECT count(*) as c FROM jobs WHERE scored_at IS NOT NULL'),
+    ]);
+    return {
+      total: Number(totalR.rows[0].c),
+      filtered: Number(filteredR.rows[0].c),
+      seeded: Number(seededR.rows[0].c),
+      scored: Number(scoredR.rows[0].c),
+    };
+  }
+
+  async close(): Promise<void> {
+    this.client.close();
+  }
 }
 
-export function markJobsNotified(db: Database.Database, jobIds: string[]): void {
-  if (jobIds.length === 0) return;
-  const placeholders = jobIds.map(() => '?').join(', ');
-  db.prepare(`UPDATE jobs SET notified = 1 WHERE id IN (${placeholders})`).run(...jobIds);
+// ── Row mapping helper ─────────────────────────────────────────────────
+
+function rowToJobRow(row: Record<string, unknown>): JobRow {
+  return {
+    id: String(row.id),
+    external_id: Number(row.external_id),
+    company_name: String(row.company_name),
+    company_id: String(row.company_id),
+    title: String(row.title),
+    location: row.location == null ? null : String(row.location),
+    url: String(row.url),
+    description: row.description == null ? null : String(row.description),
+    posted_at: row.posted_at == null ? null : String(row.posted_at),
+    first_seen_at: row.first_seen_at == null ? undefined : String(row.first_seen_at),
+    passed_filter: Number(row.passed_filter),
+    is_seed: Number(row.is_seed),
+    applied: Number(row.applied),
+    notified: Number(row.notified),
+    location_score: row.location_score == null ? null : Number(row.location_score),
+    location_reasoning: row.location_reasoning == null ? null : String(row.location_reasoning),
+    stack_score: row.stack_score == null ? null : Number(row.stack_score),
+    stack_reasoning: row.stack_reasoning == null ? null : String(row.stack_reasoning),
+    comp_score: row.comp_score == null ? null : Number(row.comp_score),
+    comp_reasoning: row.comp_reasoning == null ? null : String(row.comp_reasoning),
+    overall_score: row.overall_score == null ? null : Number(row.overall_score),
+    overall_reasoning: row.overall_reasoning == null ? null : String(row.overall_reasoning),
+    dealbreaker: row.dealbreaker == null ? null : String(row.dealbreaker),
+    scored_at: row.scored_at == null ? null : String(row.scored_at),
+  };
 }
 
-export function getStats(db: Database.Database): {
-  total: number;
-  filtered: number;
-  seeded: number;
-  scored: number;
-} {
-  const total = (db.prepare('SELECT count(*) as c FROM jobs').get() as { c: number }).c;
-  const filtered = (
-    db.prepare('SELECT count(*) as c FROM jobs WHERE passed_filter = 1').get() as { c: number }
-  ).c;
-  const seeded = (
-    db.prepare('SELECT count(*) as c FROM jobs WHERE is_seed = 1').get() as { c: number }
-  ).c;
-  const scored = (
-    db.prepare('SELECT count(*) as c FROM jobs WHERE scored_at IS NOT NULL').get() as { c: number }
-  ).c;
-  return { total, filtered, seeded, scored };
+// ── Factory ────────────────────────────────────────────────────────────
+
+export async function createDatabase(): Promise<DatabaseAdapter> {
+  const db = DB_BACKEND === 'turso' ? new TursoDatabase() : new LocalDatabase();
+  await db.init();
+  return db;
 }

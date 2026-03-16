@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import Anthropic from '@anthropic-ai/sdk';
 import { SCORING_MODEL, SCORING_THRESHOLD } from '../shared/config.js';
-import { initDb, getUnscoredJobs, saveJobScore, getStats } from '../shared/db.js';
+import { createDatabase } from '../shared/db.js';
 import { scoreJob } from './claude.js';
 
 function sleep(ms: number): Promise<void> {
@@ -16,8 +16,8 @@ async function main() {
   }
 
   const client = new Anthropic();
-  const db = initDb();
-  const jobs = getUnscoredJobs(db);
+  const db = await createDatabase();
+  const jobs = await db.getUnscoredJobs();
 
   const runTime = new Date().toISOString();
   console.log('====================================================');
@@ -28,7 +28,7 @@ async function main() {
 
   if (jobs.length === 0) {
     console.log('  No unscored jobs found. Nothing to do.');
-    db.close();
+    await db.close();
     return;
   }
 
@@ -46,7 +46,7 @@ async function main() {
 
     try {
       const result = await scoreJob(client, job);
-      saveJobScore(db, job.id, result);
+      await db.saveJobScore(job.id, result);
       scored++;
 
       if (result.overall_score >= SCORING_THRESHOLD) highScoreCount++;
@@ -70,7 +70,7 @@ async function main() {
     }
   }
 
-  const stats = getStats(db);
+  const stats = await db.getStats();
 
   console.log('────────────────────────────────────────────────────');
   console.log(`  Scored:        ${scored} jobs`);
@@ -80,7 +80,7 @@ async function main() {
   console.log(`  DB total scored: ${stats.scored}`);
   console.log('====================================================');
 
-  db.close();
+  await db.close();
 }
 
 main().catch((err) => {

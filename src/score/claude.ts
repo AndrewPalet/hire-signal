@@ -2,7 +2,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { existsSync, readFileSync } from 'node:fs';
 import { SCORING_MODEL, SCORING_BRIEF_PATH } from '../shared/config.js';
 import { truncateDescription } from '../shared/utils.js';
-import type { JobRow, ScoreResult } from '../shared/db.js';
+import type { JobRow, ScoreResult } from '../shared/types.js';
 
 const SYSTEM_PROMPT = `You are a job-fit scoring engine. You evaluate job postings against a candidate's profile and return structured scores.
 
