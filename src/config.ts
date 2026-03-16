@@ -1,55 +1,64 @@
 export interface Company {
   name: string;
-  boardId: string;
-  source: 'greenhouse';
+  id: string;
   visited: boolean;
 }
 
 export const COMPANIES: Company[] = [
-  { name: 'Stripe', boardId: 'stripe', source: 'greenhouse', visited: true },
-  { name: 'Cloudflare', boardId: 'cloudflare', source: 'greenhouse', visited: true },
-  { name: 'Figma', boardId: 'figma', source: 'greenhouse', visited: true },
-  { name: 'Vercel', boardId: 'vercel', source: 'greenhouse', visited: true },
-  { name: 'Datadog', boardId: 'datadog', source: 'greenhouse', visited: true },
+  { name: 'Figma', id: 'figma', visited: true },
+  { name: 'Airbnb', id: 'airbnb', visited: true },
+  { name: 'Toast', id: 'toast', visited: true },
+  { name: 'Headway', id: 'headway', visited: true },
+  { name: 'Calendly', id: 'calendly', visited: true },
+  { name: 'tvScientific', id: 'tvscientificpoweredbypinterest', visited: true },
+  { name: 'OpenTable', id: 'opentable', visited: true },
+  { name: 'Twilio', id: 'twilio', visited: true },
+  { name: 'Alvys', id: 'alvys', visited: true },
 ];
 
 export const INCLUDE_KEYWORDS: string[] = [
   'software engineer',
   'senior software',
   'staff engineer',
-  'frontend engineer',
-  'front-end engineer',
-  'backend engineer',
-  'back-end engineer',
-  'fullstack engineer',
-  'full-stack engineer',
-  'full stack engineer',
-  'web engineer',
-  'platform engineer',
-  'product engineer',
   'senior engineer',
+  'frontend',
+  'front-end',
+  'front end',
+  'full stack',
+  'fullstack',
+  'full-stack',
+  'product engineer',
+  'mobile engineer',
+  'react',
   'typescript',
+  'node',
+  'platform engineer',
+  'ui engineer',
+  'web engineer',
 ];
 
 export const EXCLUDE_KEYWORDS: string[] = [
-  'manager',
-  'director',
-  'intern',
-  'co-op',
-  'junior',
-  'new grad',
-  'machine learning',
-  'ml engineer',
   'data scientist',
   'data engineer',
+  'ml engineer',
+  'machine learning',
+  'qa',
+  'quality assurance',
+  'sdet',
+  'test engineer',
+  'manager',
+  'director',
+  'vp ',
+  'head of',
+  'designer',
   'devops',
   'sre',
   'site reliability',
-  'security engineer',
-  'hardware',
-  'embedded',
-  'vp ',
-  'principal',
+  'intern',
+  'internship',
+  'apprentice',
+  'new grad',
+  'early career',
 ];
 
 export const GREENHOUSE_BASE_URL = 'https://boards-api.greenhouse.io/v1/boards';

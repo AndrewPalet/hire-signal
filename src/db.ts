@@ -5,19 +5,19 @@ import { DB_PATH } from './config.js';
 
 export interface JobRow {
   id: string;
-  greenhouse_id: number;
-  company: string;
-  board_id: string;
+  external_id: number;
+  company_name: string;
+  company_id: string;
   title: string;
-  location: string;
+  location: string | null;
   url: string;
   description: string | null;
-  posted_at: string;
-  first_seen_at: string;
-  source: string;
+  posted_at: string | null;
+  first_seen_at?: string;
   passed_filter: number;
   is_seed: number;
-  score: number | null;
+  applied: number;
+  notified: number;
 }
 
 export function initDb(): Database.Database {
@@ -29,22 +29,22 @@ export function initDb(): Database.Database {
   db.exec(`
     CREATE TABLE IF NOT EXISTS jobs (
       id TEXT PRIMARY KEY,
-      greenhouse_id INTEGER NOT NULL,
-      company TEXT NOT NULL,
-      board_id TEXT NOT NULL,
+      external_id INTEGER NOT NULL,
+      company_name TEXT NOT NULL,
+      company_id TEXT NOT NULL,
       title TEXT NOT NULL,
-      location TEXT NOT NULL,
+      location TEXT,
       url TEXT NOT NULL,
       description TEXT,
-      posted_at TEXT NOT NULL,
-      first_seen_at TEXT NOT NULL,
-      source TEXT NOT NULL,
+      posted_at TEXT,
+      first_seen_at TEXT NOT NULL DEFAULT (datetime('now')),
       passed_filter INTEGER NOT NULL DEFAULT 0,
       is_seed INTEGER NOT NULL DEFAULT 0,
-      score REAL
+      applied INTEGER DEFAULT 0,
+      notified INTEGER DEFAULT 0
     );
 
-    CREATE INDEX IF NOT EXISTS idx_jobs_company ON jobs(company);
+    CREATE INDEX IF NOT EXISTS idx_jobs_company_id ON jobs(company_id);
     CREATE INDEX IF NOT EXISTS idx_jobs_passed_filter ON jobs(passed_filter);
     CREATE INDEX IF NOT EXISTS idx_jobs_is_seed ON jobs(is_seed);
   `);
@@ -57,20 +57,23 @@ export function jobExists(db: Database.Database, id: string): boolean {
   return row !== undefined;
 }
 
-export function companyHasJobs(db: Database.Database, boardId: string): boolean {
-  const row = db.prepare('SELECT 1 FROM jobs WHERE board_id = ?').get(boardId);
+export function companyHasJobs(db: Database.Database, companyId: string): boolean {
+  const row = db.prepare('SELECT 1 FROM jobs WHERE company_id = ?').get(companyId);
   return row !== undefined;
 }
 
-export function insertJob(db: Database.Database, job: JobRow): void {
+export function insertJob(
+  db: Database.Database,
+  job: Omit<JobRow, 'first_seen_at' | 'applied' | 'notified'>,
+): void {
   db.prepare(
     `
     INSERT OR IGNORE INTO jobs (
-      id, greenhouse_id, company, board_id, title, location, url,
-      description, posted_at, first_seen_at, source, passed_filter, is_seed, score
+      id, external_id, company_name, company_id, title, location, url,
+      description, posted_at, passed_filter, is_seed
     ) VALUES (
-      @id, @greenhouse_id, @company, @board_id, @title, @location, @url,
-      @description, @posted_at, @first_seen_at, @source, @passed_filter, @is_seed, @score
+      @id, @external_id, @company_name, @company_id, @title, @location, @url,
+      @description, @posted_at, @passed_filter, @is_seed
     )
   `,
   ).run(job);

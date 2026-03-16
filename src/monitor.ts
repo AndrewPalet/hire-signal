@@ -14,6 +14,7 @@ import { stripHtml } from './utils.js';
 interface MatchInfo {
   title: string;
   location: string;
+  postedAt: string;
   url: string;
   company: string;
 }
@@ -26,13 +27,16 @@ async function main() {
   const db = initDb();
   const newMatches: MatchInfo[] = [];
 
+  const runTime = new Date().toISOString();
   console.log('====================================================');
-  console.log(`  Hire Signal — Job Monitor`);
-  console.log(`  ${new Date().toISOString()}`);
+  console.log(`  Hire-Signal - Job Monitor Run: ${runTime}`);
   console.log('====================================================\n');
 
-  let totalNew = 0;
-  let totalFiltered = 0;
+  let totalSeeded = 0;
+  let totalAlreadySeen = 0;
+  let totalNewFiltered = 0;
+  let totalNewMatched = 0;
+  let seedCompanyCount = 0;
 
   for (let i = 0; i < COMPANIES.length; i++) {
     const company = COMPANIES[i];
@@ -41,16 +45,24 @@ async function main() {
       await sleep(DELAY_BETWEEN_COMPANIES_MS);
     }
 
-    const isSeedRun = company.visited && !companyHasJobs(db, company.boardId);
-    const jobs = await fetchJobs(company.boardId);
+    const isSeedRun = company.visited && !companyHasJobs(db, company.id);
+    const jobs = await fetchJobs(company.id);
+
+    const seedLabel = isSeedRun ? ' — seed run' : '';
+    console.log(`→ ${company.name} (${company.id}) [visited${seedLabel}]`);
+    console.log(`  Found ${jobs.length} total listings`);
 
     let newCount = 0;
     let matchCount = 0;
+    let alreadySeen = 0;
 
     for (const job of jobs) {
-      const id = `greenhouse_${company.boardId}_${job.id}`;
+      const id = `greenhouse_${company.id}_${job.id}`;
 
-      if (jobExists(db, id)) continue;
+      if (jobExists(db, id)) {
+        alreadySeen++;
+        continue;
+      }
 
       const passes = passesFilter(job.title);
       newCount++;
@@ -58,23 +70,20 @@ async function main() {
 
       insertJob(db, {
         id,
-        greenhouse_id: job.id,
-        company: company.name,
-        board_id: company.boardId,
+        external_id: job.id,
+        company_name: company.name,
+        company_id: company.id,
         title: job.title,
         location: job.location.name,
         url: job.absolute_url,
         description: null,
         posted_at: job.updated_at,
-        first_seen_at: new Date().toISOString(),
-        source: company.source,
         passed_filter: passes ? 1 : 0,
         is_seed: isSeedRun ? 1 : 0,
-        score: null,
       });
 
       if (passes) {
-        const detail = await fetchJobDetail(company.boardId, job.id);
+        const detail = await fetchJobDetail(company.id, job.id);
         if (detail?.content) {
           const stripped = stripHtml(detail.content);
           updateJobDescription(db, id, stripped);
@@ -84,6 +93,7 @@ async function main() {
           newMatches.push({
             title: job.title,
             location: job.location.name,
+            postedAt: job.updated_at,
             url: job.absolute_url,
             company: company.name,
           });
@@ -91,38 +101,52 @@ async function main() {
       }
     }
 
-    totalNew += newCount;
-    totalFiltered += matchCount;
-
-    const seedLabel = isSeedRun ? ' ✓ seed' : '';
-    console.log(
-      `  → ${company.name}: ${jobs.length} listed, ${newCount} new, ${matchCount} matched${seedLabel}`,
-    );
-  }
-
-  console.log('');
-
-  if (newMatches.length > 0) {
-    console.log('────────────────────────────────────────────────────');
-    console.log(`  🎯 New Matches (${newMatches.length})`);
-    console.log('────────────────────────────────────────────────────');
-    for (const m of newMatches) {
-      console.log(`  ${m.company} — ${m.title}`);
-      console.log(`    📍 ${m.location}`);
-      console.log(`    🔗 ${m.url}`);
-      console.log('');
+    if (isSeedRun) {
+      console.log(`  ✓ Seeded ${newCount} jobs (skipping scoring)`);
+      totalSeeded += newCount;
+      seedCompanyCount++;
+    } else {
+      console.log(`  ✓ ${matchCount} new match, ${newCount - matchCount} filtered out`);
+      totalNewMatched += matchCount;
+      totalNewFiltered += newCount - matchCount;
     }
-  } else {
-    console.log('  😴 No new matches this run.');
+
+    totalAlreadySeen += alreadySeen;
     console.log('');
   }
 
+  console.log('────────────────────────────────────────────────────\n');
+
+  if (newMatches.length > 0) {
+    console.log(`🎯 Found ${newMatches.length} new job(s) matching your filters:\n`);
+    for (let i = 0; i < newMatches.length; i++) {
+      const m = newMatches[i];
+      console.log(`  [${i + 1}] ${m.company} — ${m.title}`);
+      console.log(`      Location: ${m.location}`);
+      console.log(`      Posted:   ${m.postedAt}`);
+      console.log(`      URL:      ${m.url}`);
+      console.log('');
+    }
+  } else if (totalSeeded > 0) {
+    console.log(`😴 No new matching jobs since last run.`);
+    console.log(`   (First run seeded ${seedCompanyCount} visited companies)\n`);
+  } else {
+    console.log('😴 No new matching jobs since last run.\n');
+  }
+
   const stats = getStats(db);
+
   console.log('────────────────────────────────────────────────────');
+  if (totalSeeded > 0) {
+    console.log(`  Seeded:             ${totalSeeded} jobs (visited companies, first run)`);
+  }
+  console.log(`  Already seen:       ${totalAlreadySeen}`);
+  console.log(`  New (filtered out): ${totalNewFiltered}`);
+  console.log(`  New (matched):      ${totalNewMatched}`);
+  console.log(`  DB total:           ${stats.total} jobs tracked`);
   console.log(
-    `  Total jobs: ${stats.total} | Matched: ${stats.filtered} | Seeded: ${stats.seeded}`,
+    `  DB filtered:        ${stats.filtered} passed filter${totalSeeded > 0 ? ' (all seeded)' : ''}`,
   );
-  console.log(`  This run: ${totalNew} new, ${totalFiltered} matched`);
   console.log('====================================================');
 
   db.close();
