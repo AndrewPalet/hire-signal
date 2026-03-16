@@ -45,6 +45,27 @@ Figma, Airbnb, Toast, Headway, Calendly, tvScientific, OpenTable, Twilio, Alvys
 - **Ashby:** Notion, Ramp, Linear, Retool, Plaid
 - **Lever:** Metabase
 
+## Adding a New Company
+
+1. **Find the Greenhouse board slug** (see [CLAUDE.md](CLAUDE.md) for detailed steps):
+   ```
+   https://boards-api.greenhouse.io/v1/boards/{slug}/jobs
+   ```
+
+2. **Add to `src/shared/config.ts`:**
+   ```typescript
+   { name: 'Rocket Money', id: 'truebill', visited: false },
+   ```
+   - `visited: false` — scores ALL current jobs on first run (use when you want to evaluate a company's full catalog)
+   - `visited: true` — seeds existing jobs and only scores NEW postings going forward
+
+3. **Commit and push** — the next GitHub Actions run will pick it up automatically. Or trigger a manual run via `workflow_dispatch`.
+
+4. **After the first run**, flip to `visited: true` so future runs only surface new postings:
+   ```typescript
+   { name: 'Rocket Money', id: 'truebill', visited: true },
+   ```
+
 ## How It Works
 
 **Visited vs. unvisited companies:** Companies marked `visited: true` get their existing catalog "seeded" on first run (`is_seed = 1`) so those jobs are never scored or notified. Only net-new postings flow through the pipeline. Unvisited companies (added later) get all jobs scored on first ingestion.

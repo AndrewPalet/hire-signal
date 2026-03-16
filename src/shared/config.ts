@@ -14,6 +14,7 @@ export const COMPANIES: Company[] = [
   { name: 'OpenTable', id: 'opentable', visited: true },
   { name: 'Twilio', id: 'twilio', visited: true },
   { name: 'Alvys', id: 'alvys', visited: true },
+  { name: 'Rocket Money', id: 'truebill', visited: false },
 ];
 
 export const INCLUDE_KEYWORDS: string[] = [
