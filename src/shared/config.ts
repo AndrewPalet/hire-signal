@@ -15,6 +15,16 @@ export const COMPANIES: Company[] = [
   { name: 'Twilio', id: 'twilio', seed: true },
   { name: 'Alvys', id: 'alvys', seed: true },
   { name: 'Rocket Money', id: 'truebill', seed: false },
+  { name: 'Stripe', id: 'stripe', seed: false },
+  { name: 'Coinbase', id: 'coinbase', seed: false },
+  { name: 'Mercury', id: 'mercury', seed: false },
+  { name: 'Kalshi', id: 'kalshi', seed: false },
+  { name: 'Webflow', id: 'webflow', seed: false },
+  { name: 'Descript', id: 'descript', seed: false },
+  { name: 'Gusto', id: 'gusto', seed: false },
+  { name: 'Postman', id: 'postman', seed: false },
+  { name: 'Metronome', id: 'metronome', seed: false },
+  { name: 'PagerDuty', id: 'pagerduty', seed: false },
 ];
 
 export const INCLUDE_KEYWORDS: string[] = [
