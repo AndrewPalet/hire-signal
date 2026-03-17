@@ -119,9 +119,11 @@ export function buildEmbeds(jobs: JobRow[]): DiscordEmbed[] {
 }
 
 function embedCharCount(embed: DiscordEmbed): number {
-  return (embed.title?.length ?? 0) +
+  return (
+    (embed.title?.length ?? 0) +
     (embed.footer?.text.length ?? 0) +
-    embed.fields.reduce((sum, f) => sum + f.name.length + f.value.length, 0);
+    embed.fields.reduce((sum, f) => sum + f.name.length + f.value.length, 0)
+  );
 }
 
 function sleep(ms: number): Promise<void> {
@@ -139,7 +141,10 @@ export async function sendWebhook(
   let currentChars = 0;
   for (const embed of embeds) {
     const embedChars = embedCharCount(embed);
-    if (currentChunk.length > 0 && (currentChunk.length >= 10 || currentChars + embedChars > MAX_WEBHOOK_CHARS)) {
+    if (
+      currentChunk.length > 0 &&
+      (currentChunk.length >= 10 || currentChars + embedChars > MAX_WEBHOOK_CHARS)
+    ) {
       chunks.push(currentChunk);
       currentChunk = [];
       currentChars = 0;

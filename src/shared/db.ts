@@ -26,7 +26,7 @@ export interface DatabaseAdapter {
 const CREATE_TABLE = `
   CREATE TABLE IF NOT EXISTS jobs (
     id TEXT PRIMARY KEY,
-    external_id INTEGER NOT NULL,
+    external_id TEXT NOT NULL,
     company_name TEXT NOT NULL,
     company_id TEXT NOT NULL,
     title TEXT NOT NULL,
@@ -350,7 +350,7 @@ class TursoDatabase implements DatabaseAdapter {
 function rowToJobRow(row: Record<string, unknown>): JobRow {
   return {
     id: String(row.id),
-    external_id: Number(row.external_id),
+    external_id: String(row.external_id),
     company_name: String(row.company_name),
     company_id: String(row.company_id),
     title: String(row.title),

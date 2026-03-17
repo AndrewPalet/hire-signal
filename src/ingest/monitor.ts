@@ -2,8 +2,7 @@ import 'dotenv/config';
 import { COMPANIES, DELAY_BETWEEN_COMPANIES_MS } from '../shared/config.js';
 import { createDatabase } from '../shared/db.js';
 import { passesFilter } from './filter.js';
-import { fetchJobs, fetchJobDetail } from './greenhouse.js';
-import { stripHtml } from '../shared/utils.js';
+import { getFetcher } from './fetcher.js';
 
 interface MatchInfo {
   title: string;
@@ -39,56 +38,57 @@ async function main() {
       await sleep(DELAY_BETWEEN_COMPANIES_MS);
     }
 
+    const fetcher = getFetcher(company.source);
     const isSeedRun = company.seed && !(await db.companyHasJobs(company.id));
-    const jobs = await fetchJobs(company.id);
+    const listings = await fetcher.fetchListings(company.id);
 
     const seedLabel = isSeedRun ? ' — seed run' : '';
     console.log(`→ ${company.name} (${company.id})${seedLabel}`);
-    console.log(`  Found ${jobs.length} total listings`);
+    console.log(`  Found ${listings.length} total listings`);
 
     let newCount = 0;
     let matchCount = 0;
     let alreadySeen = 0;
 
-    for (const job of jobs) {
-      const id = `greenhouse_${company.id}_${job.id}`;
+    for (const listing of listings) {
+      const id = `${company.source}_${company.id}_${listing.externalId}`;
 
       if (await db.jobExists(id)) {
         alreadySeen++;
         continue;
       }
 
-      const passes = passesFilter(job.title);
+      const passes = passesFilter(listing.title);
       newCount++;
       if (passes) matchCount++;
 
       await db.insertJob({
         id,
-        external_id: job.id,
+        external_id: listing.externalId,
         company_name: company.name,
         company_id: company.id,
-        title: job.title,
-        location: job.location.name,
-        url: job.absolute_url,
+        title: listing.title,
+        location: listing.location,
+        url: listing.url,
         description: null,
-        posted_at: job.updated_at,
+        posted_at: listing.postedAt,
         passed_filter: passes ? 1 : 0,
         is_seed: isSeedRun ? 1 : 0,
       });
 
       if (passes) {
-        const detail = await fetchJobDetail(company.id, job.id);
-        if (detail?.content) {
-          const stripped = stripHtml(detail.content);
-          await db.updateJobDescription(id, stripped);
+        const description =
+          listing.description ?? (await fetcher.fetchDescription(company.id, listing.externalId));
+        if (description) {
+          await db.updateJobDescription(id, description);
         }
 
         if (!isSeedRun) {
           newMatches.push({
-            title: job.title,
-            location: job.location.name,
-            postedAt: job.updated_at,
-            url: job.absolute_url,
+            title: listing.title,
+            location: listing.location ?? '',
+            postedAt: listing.postedAt ?? '',
+            url: listing.url,
             company: company.name,
           });
         }

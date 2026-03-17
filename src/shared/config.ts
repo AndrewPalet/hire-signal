@@ -1,30 +1,37 @@
+export type AtsSource = 'greenhouse' | 'ashby';
+
 export interface Company {
   name: string;
   id: string;
   seed: boolean;
+  source: AtsSource;
 }
 
 export const COMPANIES: Company[] = [
-  { name: 'Figma', id: 'figma', seed: true },
-  { name: 'Airbnb', id: 'airbnb', seed: true },
-  { name: 'Toast', id: 'toast', seed: true },
-  { name: 'Headway', id: 'headway', seed: true },
-  { name: 'Calendly', id: 'calendly', seed: true },
-  { name: 'tvScientific', id: 'tvscientificpoweredbypinterest', seed: true },
-  { name: 'OpenTable', id: 'opentable', seed: true },
-  { name: 'Twilio', id: 'twilio', seed: true },
-  { name: 'Alvys', id: 'alvys', seed: true },
-  { name: 'Rocket Money', id: 'truebill', seed: false },
-  { name: 'Stripe', id: 'stripe', seed: false },
-  { name: 'Coinbase', id: 'coinbase', seed: false },
-  { name: 'Mercury', id: 'mercury', seed: false },
-  { name: 'Kalshi', id: 'kalshi', seed: false },
-  { name: 'Webflow', id: 'webflow', seed: false },
-  { name: 'Descript', id: 'descript', seed: false },
-  { name: 'Gusto', id: 'gusto', seed: false },
-  { name: 'Postman', id: 'postman', seed: false },
-  { name: 'Metronome', id: 'metronome', seed: false },
-  { name: 'PagerDuty', id: 'pagerduty', seed: false },
+  { name: 'Figma', id: 'figma', seed: true, source: 'greenhouse' },
+  { name: 'Airbnb', id: 'airbnb', seed: true, source: 'greenhouse' },
+  { name: 'Toast', id: 'toast', seed: true, source: 'greenhouse' },
+  { name: 'Headway', id: 'headway', seed: true, source: 'greenhouse' },
+  { name: 'Calendly', id: 'calendly', seed: true, source: 'greenhouse' },
+  { name: 'tvScientific', id: 'tvscientificpoweredbypinterest', seed: true, source: 'greenhouse' },
+  { name: 'OpenTable', id: 'opentable', seed: true, source: 'greenhouse' },
+  { name: 'Twilio', id: 'twilio', seed: true, source: 'greenhouse' },
+  { name: 'Alvys', id: 'alvys', seed: true, source: 'greenhouse' },
+  { name: 'Rocket Money', id: 'truebill', seed: false, source: 'greenhouse' },
+  { name: 'Stripe', id: 'stripe', seed: false, source: 'greenhouse' },
+  { name: 'Coinbase', id: 'coinbase', seed: false, source: 'greenhouse' },
+  { name: 'Mercury', id: 'mercury', seed: false, source: 'greenhouse' },
+  { name: 'Kalshi', id: 'kalshi', seed: false, source: 'greenhouse' },
+  { name: 'Webflow', id: 'webflow', seed: false, source: 'greenhouse' },
+  { name: 'Descript', id: 'descript', seed: false, source: 'greenhouse' },
+  { name: 'Gusto', id: 'gusto', seed: false, source: 'greenhouse' },
+  { name: 'Postman', id: 'postman', seed: false, source: 'greenhouse' },
+  { name: 'Metronome', id: 'metronome', seed: false, source: 'greenhouse' },
+  { name: 'PagerDuty', id: 'pagerduty', seed: false, source: 'greenhouse' },
+  { name: 'Notion', id: 'notion', seed: false, source: 'ashby' },
+  { name: 'Ramp', id: 'ramp', seed: false, source: 'ashby' },
+  { name: 'Linear', id: 'linear', seed: false, source: 'ashby' },
+  { name: 'Plaid', id: 'plaid', seed: false, source: 'ashby' },
 ];
 
 export const INCLUDE_KEYWORDS: string[] = [
@@ -73,6 +80,7 @@ export const EXCLUDE_KEYWORDS: string[] = [
 ];
 
 export const GREENHOUSE_BASE_URL = 'https://boards-api.greenhouse.io/v1/boards';
+export const ASHBY_BASE_URL = 'https://api.ashbyhq.com/posting-api/job-board';
 export const DELAY_BETWEEN_COMPANIES_MS = 1000;
 export const DB_PATH = 'data/jobs.db';
 
