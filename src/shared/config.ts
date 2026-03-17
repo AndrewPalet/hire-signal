@@ -1,4 +1,4 @@
-export type AtsSource = 'greenhouse' | 'ashby';
+export type AtsSource = 'greenhouse' | 'ashby' | 'lever';
 
 export interface Company {
   name: string;
@@ -32,6 +32,7 @@ export const COMPANIES: Company[] = [
   { name: 'Ramp', id: 'ramp', seed: false, source: 'ashby' },
   { name: 'Linear', id: 'linear', seed: false, source: 'ashby' },
   { name: 'Plaid', id: 'plaid', seed: false, source: 'ashby' },
+  { name: 'Metabase', id: 'metabase', seed: false, source: 'lever' },
 ];
 
 export const INCLUDE_KEYWORDS: string[] = [
@@ -81,6 +82,7 @@ export const EXCLUDE_KEYWORDS: string[] = [
 
 export const GREENHOUSE_BASE_URL = 'https://boards-api.greenhouse.io/v1/boards';
 export const ASHBY_BASE_URL = 'https://api.ashbyhq.com/posting-api/job-board';
+export const LEVER_BASE_URL = 'https://jobs.lever.co/v0/postings';
 export const DELAY_BETWEEN_COMPANIES_MS = 1000;
 export const DB_PATH = 'data/jobs.db';
 

@@ -1,6 +1,7 @@
 import type { AtsSource } from '../shared/config.js';
 import { GreenhouseFetcher } from './greenhouse.js';
 import { AshbyFetcher } from './ashby.js';
+import { LeverFetcher } from './lever.js';
 
 export interface JobListing {
   externalId: string;
@@ -19,6 +20,7 @@ export interface JobFetcher {
 const fetchers: Record<AtsSource, JobFetcher> = {
   greenhouse: new GreenhouseFetcher(),
   ashby: new AshbyFetcher(),
+  lever: new LeverFetcher(),
 };
 
 export function getFetcher(source: AtsSource): JobFetcher {
