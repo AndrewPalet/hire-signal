@@ -1,8 +1,11 @@
 import 'dotenv/config';
-import { COMPANIES, DELAY_BETWEEN_COMPANIES_MS } from '../shared/config.js';
-import { createDatabase } from '../shared/db.js';
+import pLimit from 'p-limit';
+import { COMPANIES, type Company } from '../shared/config.js';
+import { createDatabase, type DatabaseAdapter } from '../shared/db.js';
 import { passesFilter } from './filter.js';
 import { getFetcher } from './fetcher.js';
+
+const CONCURRENCY = 5;
 
 interface MatchInfo {
   title: string;
@@ -12,55 +15,46 @@ interface MatchInfo {
   company: string;
 }
 
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+interface CompanyResult {
+  company: Company;
+  listings: number;
+  alreadySeen: number;
+  newFiltered: number;
+  newMatched: number;
+  seeded: number;
+  isSeedRun: boolean;
+  matches: MatchInfo[];
+  error: string | null;
 }
 
-async function main() {
-  const db = await createDatabase();
-  const newMatches: MatchInfo[] = [];
+async function processCompany(company: Company, db: DatabaseAdapter): Promise<CompanyResult> {
+  const result: CompanyResult = {
+    company,
+    listings: 0,
+    alreadySeen: 0,
+    newFiltered: 0,
+    newMatched: 0,
+    seeded: 0,
+    isSeedRun: false,
+    matches: [],
+    error: null,
+  };
 
-  const runTime = new Date().toISOString();
-  console.log('====================================================');
-  console.log(`  Hire-Signal - Job Monitor Run: ${runTime}`);
-  console.log('====================================================\n');
-
-  let totalSeeded = 0;
-  let totalAlreadySeen = 0;
-  let totalNewFiltered = 0;
-  let totalNewMatched = 0;
-  let seedCompanyCount = 0;
-
-  for (let i = 0; i < COMPANIES.length; i++) {
-    const company = COMPANIES[i];
-
-    if (i > 0) {
-      await sleep(DELAY_BETWEEN_COMPANIES_MS);
-    }
-
+  try {
     const fetcher = getFetcher(company.source);
-    const isSeedRun = company.seed && !(await db.companyHasJobs(company.id));
+    result.isSeedRun = company.seed && !(await db.companyHasJobs(company.id));
     const listings = await fetcher.fetchListings(company.id);
-
-    const seedLabel = isSeedRun ? ' — seed run' : '';
-    console.log(`→ ${company.name} (${company.id})${seedLabel}`);
-    console.log(`  Found ${listings.length} total listings`);
-
-    let newCount = 0;
-    let matchCount = 0;
-    let alreadySeen = 0;
+    result.listings = listings.length;
 
     for (const listing of listings) {
       const id = `${company.source}_${company.id}_${listing.externalId}`;
 
       if (await db.jobExists(id)) {
-        alreadySeen++;
+        result.alreadySeen++;
         continue;
       }
 
       const passes = passesFilter(listing.title);
-      newCount++;
-      if (passes) matchCount++;
 
       await db.insertJob({
         id,
@@ -73,18 +67,19 @@ async function main() {
         description: null,
         posted_at: listing.postedAt,
         passed_filter: passes ? 1 : 0,
-        is_seed: isSeedRun ? 1 : 0,
+        is_seed: result.isSeedRun ? 1 : 0,
       });
 
       if (passes) {
+        result.newMatched++;
         const description =
           listing.description ?? (await fetcher.fetchDescription(company.id, listing.externalId));
         if (description) {
           await db.updateJobDescription(id, description);
         }
 
-        if (!isSeedRun) {
-          newMatches.push({
+        if (!result.isSeedRun) {
+          result.matches.push({
             title: listing.title,
             location: listing.location ?? '',
             postedAt: listing.postedAt ?? '',
@@ -92,29 +87,69 @@ async function main() {
             company: company.name,
           });
         }
+      } else {
+        result.newFiltered++;
+      }
+
+      if (result.isSeedRun) {
+        result.seeded++;
       }
     }
+  } catch (err) {
+    result.error = err instanceof Error ? err.message : String(err);
+  }
 
-    if (isSeedRun) {
-      console.log(`  ✓ Seeded ${newCount} jobs (skipping scoring)`);
-      totalSeeded += newCount;
+  return result;
+}
+
+async function main() {
+  const db = await createDatabase();
+  const limit = pLimit(CONCURRENCY);
+
+  const runTime = new Date().toISOString();
+  console.log('====================================================');
+  console.log(`  Hire-Signal - Job Monitor Run: ${runTime}`);
+  console.log(`  Concurrency: ${CONCURRENCY} companies in parallel`);
+  console.log('====================================================\n');
+
+  const results = await Promise.all(
+    COMPANIES.map((company) => limit(() => processCompany(company, db))),
+  );
+
+  let totalSeeded = 0;
+  let totalAlreadySeen = 0;
+  let totalNewFiltered = 0;
+  let totalNewMatched = 0;
+  let seedCompanyCount = 0;
+  const allMatches: MatchInfo[] = [];
+
+  for (const r of results) {
+    const seedLabel = r.isSeedRun ? ' — seed run' : '';
+    const errorLabel = r.error ? ` ⚠ ERROR: ${r.error}` : '';
+    console.log(`→ ${r.company.name} (${r.company.id})${seedLabel}${errorLabel}`);
+    console.log(`  Found ${r.listings} total listings`);
+
+    if (r.isSeedRun) {
+      console.log(`  ✓ Seeded ${r.seeded} jobs (skipping scoring)`);
+      totalSeeded += r.seeded;
       seedCompanyCount++;
     } else {
-      console.log(`  ✓ ${matchCount} new match, ${newCount - matchCount} filtered out`);
-      totalNewMatched += matchCount;
-      totalNewFiltered += newCount - matchCount;
+      console.log(`  ✓ ${r.newMatched} new match, ${r.newFiltered} filtered out`);
+      totalNewMatched += r.newMatched;
+      totalNewFiltered += r.newFiltered;
     }
 
-    totalAlreadySeen += alreadySeen;
+    totalAlreadySeen += r.alreadySeen;
+    allMatches.push(...r.matches);
     console.log('');
   }
 
   console.log('────────────────────────────────────────────────────\n');
 
-  if (newMatches.length > 0) {
-    console.log(`🎯 Found ${newMatches.length} new job(s) matching your filters:\n`);
-    for (let i = 0; i < newMatches.length; i++) {
-      const m = newMatches[i];
+  if (allMatches.length > 0) {
+    console.log(`🎯 Found ${allMatches.length} new job(s) matching your filters:\n`);
+    for (let i = 0; i < allMatches.length; i++) {
+      const m = allMatches[i];
       console.log(`  [${i + 1}] ${m.company} — ${m.title}`);
       console.log(`      Location: ${m.location}`);
       console.log(`      Posted:   ${m.postedAt}`);
