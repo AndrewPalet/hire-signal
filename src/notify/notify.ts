@@ -26,13 +26,12 @@ async function main() {
   }
 
   const embeds = buildEmbeds(jobs);
-  const totalBatches = Math.ceil(embeds.length / 10);
-
   let notified = 0;
   let failed = 0;
   let batchesSent = 0;
 
   const results = await sendWebhook(webhookUrl, embeds);
+  const totalBatches = results.length;
 
   // Map jobs to embeds to track which jobs belong to which batch
   // Each batch has up to 10 embeds; jobs are distributed across embeds
@@ -42,9 +41,7 @@ async function main() {
   for (const result of results) {
     if (result.success) {
       batchesSent++;
-      console.log(
-        `  Sending batch ${result.batch}/${totalBatches} (${Math.min(10, embeds.length - (result.batch - 1) * 10)} embeds)... ✓`,
-      );
+      console.log(`  Sending batch ${result.batch}/${totalBatches}... ✓`);
     } else {
       console.log(
         `  Sending batch ${result.batch}/${totalBatches}... ✗ (status: ${result.status ?? 'unknown'})`,

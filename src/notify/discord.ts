@@ -20,6 +20,7 @@ const COLOR_YELLOW = 0xf2c94c;
 
 const MAX_FIELD_VALUE = 1024;
 const MAX_EMBED_CHARS = 6000;
+const MAX_WEBHOOK_CHARS = 6000;
 const FOOTER_TEXT = 'Job Monitor — Scored with Claude Sonnet 4';
 
 function scoreColor(score: number): number {
@@ -117,6 +118,12 @@ export function buildEmbeds(jobs: JobRow[]): DiscordEmbed[] {
   return embeds;
 }
 
+function embedCharCount(embed: DiscordEmbed): number {
+  return (embed.title?.length ?? 0) +
+    (embed.footer?.text.length ?? 0) +
+    embed.fields.reduce((sum, f) => sum + f.name.length + f.value.length, 0);
+}
+
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -128,8 +135,20 @@ export async function sendWebhook(
   const results: SendResult[] = [];
   const chunks: DiscordEmbed[][] = [];
 
-  for (let i = 0; i < embeds.length; i += 10) {
-    chunks.push(embeds.slice(i, i + 10));
+  let currentChunk: DiscordEmbed[] = [];
+  let currentChars = 0;
+  for (const embed of embeds) {
+    const embedChars = embedCharCount(embed);
+    if (currentChunk.length > 0 && (currentChunk.length >= 10 || currentChars + embedChars > MAX_WEBHOOK_CHARS)) {
+      chunks.push(currentChunk);
+      currentChunk = [];
+      currentChars = 0;
+    }
+    currentChunk.push(embed);
+    currentChars += embedChars;
+  }
+  if (currentChunk.length > 0) {
+    chunks.push(currentChunk);
   }
 
   for (let i = 0; i < chunks.length; i++) {
@@ -152,6 +171,10 @@ export async function sendWebhook(
         break;
       }
 
+      if (!res.ok) {
+        const body = await res.text();
+        console.log(`  Discord error body: ${body}`);
+      }
       results.push({ batch: i + 1, success: res.ok, status: res.status });
     } catch (err) {
       console.log(`  Batch ${i + 1} failed: ${err instanceof Error ? err.message : String(err)}`);
