@@ -1,11 +1,32 @@
 import 'dotenv/config';
 import Anthropic from '@anthropic-ai/sdk';
+import pLimit from 'p-limit';
 import { SCORING_MODEL, SCORING_THRESHOLD } from '../shared/config.js';
 import { createDatabase } from '../shared/db.js';
+import type { DatabaseAdapter } from '../shared/db.js';
+import type { JobRow, ScoreResult } from '../shared/types.js';
 import { scoreJob } from './claude.js';
 
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+const CONCURRENCY = 3;
+
+interface JobScoreResult {
+  job: JobRow;
+  result: ScoreResult | null;
+  error: string | null;
+}
+
+async function scoreOne(
+  client: Anthropic,
+  db: DatabaseAdapter,
+  job: JobRow,
+): Promise<JobScoreResult> {
+  try {
+    const result = await scoreJob(client, job);
+    await db.saveJobScore(job.id, result);
+    return { job, result, error: null };
+  } catch (err) {
+    return { job, result: null, error: err instanceof Error ? err.message : String(err) };
+  }
 }
 
 async function main() {
@@ -18,12 +39,14 @@ async function main() {
   const client = new Anthropic();
   const db = await createDatabase();
   const jobs = await db.getUnscoredJobs();
+  const limit = pLimit(CONCURRENCY);
 
   const runTime = new Date().toISOString();
   console.log('====================================================');
   console.log(`  Job Scorer Run: ${runTime}`);
   console.log(`  Model: ${SCORING_MODEL}`);
   console.log(`  Unscored jobs: ${jobs.length}`);
+  console.log(`  Concurrency: ${CONCURRENCY} scoring calls in parallel`);
   console.log('====================================================\n');
 
   if (jobs.length === 0) {
@@ -32,42 +55,38 @@ async function main() {
     return;
   }
 
+  const results = await Promise.all(jobs.map((job) => limit(() => scoreOne(client, db, job))));
+
   let scored = 0;
   let highScoreCount = 0;
   let dealbreakers = 0;
   let errors = 0;
 
-  for (let i = 0; i < jobs.length; i++) {
-    const job = jobs[i];
+  for (let i = 0; i < results.length; i++) {
+    const { job, result, error } = results[i];
 
-    if (i > 0) {
-      await sleep(1000);
-    }
-
-    try {
-      const result = await scoreJob(client, job);
-      await db.saveJobScore(job.id, result);
-      scored++;
-
-      if (result.overall_score >= SCORING_THRESHOLD) highScoreCount++;
-      if (result.dealbreaker) dealbreakers++;
-
-      console.log(`  [${i + 1}] ${job.company_name} — ${job.title}`);
-      console.log(
-        `      Fit: ${result.role_fit_score}  |  Location: ${result.location_score}  |  Stack: ${result.stack_score}  |  Comp: ${result.comp_score}  |  Overall: ${result.overall_score}`,
-      );
-      if (result.dealbreaker) {
-        console.log(`      ⚠ DEALBREAKER: ${result.dealbreaker}`);
-      } else {
-        console.log(`      "${result.overall_reasoning}"`);
-      }
-      console.log('');
-    } catch (err) {
+    if (error || !result) {
       errors++;
       console.log(`  [${i + 1}] ${job.company_name} — ${job.title}`);
-      console.log(`      ✗ ERROR: ${err instanceof Error ? err.message : String(err)}`);
+      console.log(`      ✗ ERROR: ${error}`);
       console.log('');
+      continue;
     }
+
+    scored++;
+    if (result.overall_score >= SCORING_THRESHOLD) highScoreCount++;
+    if (result.dealbreaker) dealbreakers++;
+
+    console.log(`  [${i + 1}] ${job.company_name} — ${job.title}`);
+    console.log(
+      `      Fit: ${result.role_fit_score}  |  Location: ${result.location_score}  |  Stack: ${result.stack_score}  |  Comp: ${result.comp_score}  |  Overall: ${result.overall_score}`,
+    );
+    if (result.dealbreaker) {
+      console.log(`      ⚠ DEALBREAKER: ${result.dealbreaker}`);
+    } else {
+      console.log(`      "${result.overall_reasoning}"`);
+    }
+    console.log('');
   }
 
   const stats = await db.getStats();
