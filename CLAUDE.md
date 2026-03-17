@@ -2,7 +2,7 @@
 
 ## Finding a Company's Board ID
 
-When adding a new company, you need to find the correct board slug and ATS platform. The pipeline supports **Greenhouse** and **Ashby**. Follow these steps in order:
+When adding a new company, you need to find the correct board slug and ATS platform. The pipeline supports **Greenhouse**, **Ashby**, and **Lever**. Follow these steps in order:
 
 ### Step 1: Try the obvious slug
 
@@ -18,6 +18,11 @@ https://boards-api.greenhouse.io/v1/boards/{slug}/jobs
 https://api.ashbyhq.com/posting-api/job-board/{slug}
 ```
 
+**Lever:**
+```
+https://jobs.lever.co/v0/postings/{slug}?mode=json
+```
+
 Common patterns to try:
 - Company name as-is: `stripe`, `figma`, `airbnb`
 - With suffix: `toastinc`, `metabaseinc`
@@ -31,10 +36,11 @@ If Step 1 fails, fetch the company's careers/jobs page and inspect the HTML for:
 - Greenhouse embed scripts: `<script src="https://boards.greenhouse.io/embed/job_board/js?for={SLUG}">`
 - Greenhouse iframe: `<iframe src="https://boards.greenhouse.io/embed/job_board?for={SLUG}">`
 - Ashby links: `jobs.ashbyhq.com/{slug}`
+- Lever links: `jobs.lever.co/{slug}`
 - Lever initialization: `window.leverJobsOptions = {accountName: "..."}`
 - Gem links: `jobs.gem.com/{slug}`
 
-This tells you which ATS platform the company uses. If it's not Greenhouse or Ashby, note the platform for future support.
+This tells you which ATS platform the company uses. If it's not Greenhouse, Ashby, or Lever, note the platform for future support.
 
 ### Step 3: Web search as fallback
 
