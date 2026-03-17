@@ -28,11 +28,19 @@ export const COMPANIES: Company[] = [
   { name: 'Postman', id: 'postman', seed: false, source: 'greenhouse' },
   { name: 'Metronome', id: 'metronome', seed: false, source: 'greenhouse' },
   { name: 'PagerDuty', id: 'pagerduty', seed: false, source: 'greenhouse' },
+  { name: 'Loom', id: 'loominc', seed: false, source: 'greenhouse' },
   { name: 'Notion', id: 'notion', seed: false, source: 'ashby' },
   { name: 'Ramp', id: 'ramp', seed: false, source: 'ashby' },
   { name: 'Linear', id: 'linear', seed: false, source: 'ashby' },
   { name: 'Plaid', id: 'plaid', seed: false, source: 'ashby' },
+  { name: 'Lattice', id: 'lattice', seed: false, source: 'ashby' },
+  { name: 'CoinTracker', id: 'cointracker', seed: false, source: 'ashby' },
+  { name: 'Deepgram', id: 'deepgram', seed: false, source: 'ashby' },
+  { name: 'NerdWallet', id: 'nerdwallet', seed: false, source: 'ashby' },
   { name: 'Metabase', id: 'metabase', seed: false, source: 'lever' },
+  { name: 'Finix', id: 'finix', seed: false, source: 'lever' },
+  { name: 'Greenlight', id: 'greenlight', seed: false, source: 'lever' },
+  { name: 'Wealth.com', id: 'WealthFinancialTechnologies', seed: false, source: 'lever' },
 ];
 
 export const INCLUDE_KEYWORDS: string[] = [
