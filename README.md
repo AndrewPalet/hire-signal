@@ -1,6 +1,6 @@
 # hire-signal
 
-Automated job board monitor that polls Greenhouse career pages, scores listings with Claude AI, and sends Discord notifications for high-fit engineering roles. Runs autonomously on GitHub Actions with Turso as the cloud database.
+Automated job board monitor that polls Greenhouse and Ashby career pages, scores listings with Claude AI, and sends Discord notifications for high-fit engineering roles. Runs autonomously on GitHub Actions with Turso as the cloud database.
 
 ## Architecture
 
@@ -24,7 +24,7 @@ GitHub Actions (cron schedule + manual dispatch)
 
 | Step | Description |
 |------|-------------|
-| **Monitor** | Poll Greenhouse APIs, keyword filter, store new jobs in SQLite/Turso |
+| **Monitor** | Poll Greenhouse/Ashby APIs, keyword filter, store new jobs in SQLite/Turso |
 | **Score** | Score unscored jobs via Claude API on role fit, location, stack, and comp |
 | **Notify** | Send rich Discord embeds for jobs scoring 7+ |
 | **Alert** | Post to `#pipeline-errors` if any step fails (used by CI) |
@@ -39,29 +39,34 @@ Runs on GitHub Actions cron:
 
 ## Monitored Companies
 
-### Greenhouse (active)
+### Greenhouse
 
-Figma, Airbnb, Toast, Headway, Calendly, tvScientific, OpenTable, Twilio, Alvys, Rocket Money
+Figma, Airbnb, Toast, Headway, Calendly, tvScientific, OpenTable, Twilio, Alvys, Rocket Money, Stripe, Coinbase, Mercury, Kalshi, Webflow, Descript, Gusto, Postman, Metronome, PagerDuty
 
-### Deferred
+### Ashby
 
-- **Greenhouse:** Stripe, Cloudflare, Vercel, Datadog
-- **Ashby:** Notion, Ramp, Linear, Retool, Plaid
+Notion, Ramp, Linear, Plaid
+
+### Not yet supported
+
+- **Greenhouse (deferred):** Cloudflare, Vercel, Datadog
 - **Lever:** Metabase
+- **Gem:** Retool
 
 ## Adding a New Company
 
-1. **Find the Greenhouse board slug** (see [CLAUDE.md](CLAUDE.md) for detailed steps):
-   ```
-   https://boards-api.greenhouse.io/v1/boards/{slug}/jobs
-   ```
+1. **Find the board slug and ATS platform** (see [CLAUDE.md](CLAUDE.md) for detailed steps):
+   - Greenhouse: `https://boards-api.greenhouse.io/v1/boards/{slug}/jobs`
+   - Ashby: `https://api.ashbyhq.com/posting-api/job-board/{slug}`
 
 2. **Add to `src/shared/config.ts`:**
    ```typescript
-   { name: 'Rocket Money', id: 'truebill', seed: false },
+   { name: 'Rocket Money', id: 'truebill', seed: false, source: 'greenhouse' },
+   { name: 'Notion', id: 'notion', seed: false, source: 'ashby' },
    ```
    - `seed: false` — scores ALL current jobs on first run (use when you want to evaluate a company's full catalog)
    - `seed: true` — seeds existing jobs silently on first run (use for companies you already watch)
+   - `source` — which ATS platform the company uses (`'greenhouse'` or `'ashby'`)
 
    Either way, subsequent runs automatically only process new postings — no manual changes needed.
 
