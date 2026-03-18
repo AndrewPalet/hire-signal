@@ -27,7 +27,7 @@ export const COMPANIES: Company[] = [
   { name: 'Robinhood', id: 'robinhood', seed: false, source: 'greenhouse' },
   { name: 'Betterment', id: 'betterment', seed: false, source: 'greenhouse' },
   { name: 'Wealthfront', id: 'wealthfront', seed: false, source: 'lever' },
-  { name: 'Affirm', id: 'affirm', seed: false, source: 'lever' },
+  { name: 'Affirm', id: 'affirm', seed: false, source: 'greenhouse' },
   { name: 'Rocket Money', id: 'truebill', seed: false, source: 'greenhouse' },
   { name: 'Greenlight', id: 'greenlight', seed: false, source: 'lever' },
   { name: 'NerdWallet', id: 'nerdwallet', seed: false, source: 'ashby' },
@@ -45,7 +45,6 @@ export const COMPANIES: Company[] = [
   { name: 'Underdog Fantasy', id: 'underdogfantasy', seed: false, source: 'greenhouse' },
   { name: 'Sleeper', id: 'sleeper', seed: false, source: 'ashby' },
   { name: 'Fliff', id: 'Fliff', seed: false, source: 'lever' },
-  { name: 'Swish Analytics', id: 'swishanalytics', seed: false, source: 'greenhouse' },
 
   // Design / Productivity
   { name: 'Figma', id: 'figma', seed: true, source: 'greenhouse' },
