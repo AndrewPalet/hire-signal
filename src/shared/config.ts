@@ -8,38 +8,72 @@ export interface Company {
 }
 
 export const COMPANIES: Company[] = [
-  { name: 'Figma', id: 'figma', seed: true, source: 'greenhouse' },
-  { name: 'Airbnb', id: 'airbnb', seed: true, source: 'greenhouse' },
-  { name: 'Toast', id: 'toast', seed: true, source: 'greenhouse' },
-  { name: 'Headway', id: 'headway', seed: true, source: 'greenhouse' },
-  { name: 'Calendly', id: 'calendly', seed: true, source: 'greenhouse' },
-  { name: 'tvScientific', id: 'tvscientificpoweredbypinterest', seed: true, source: 'greenhouse' },
-  { name: 'OpenTable', id: 'opentable', seed: true, source: 'greenhouse' },
-  { name: 'Twilio', id: 'twilio', seed: true, source: 'greenhouse' },
-  { name: 'Alvys', id: 'alvys', seed: true, source: 'greenhouse' },
-  { name: 'Rocket Money', id: 'truebill', seed: false, source: 'greenhouse' },
-  { name: 'Stripe', id: 'stripe', seed: false, source: 'greenhouse' },
+  // Crypto / Web3
   { name: 'Coinbase', id: 'coinbase', seed: false, source: 'greenhouse' },
+  { name: 'CoinTracker', id: 'cointracker', seed: false, source: 'ashby' },
+  { name: 'MetaMask', id: 'consensys', seed: true, source: 'greenhouse' },
+  { name: 'Phantom', id: 'phantom', seed: false, source: 'ashby' },
+
+  // Payments / Banking
+  { name: 'Stripe', id: 'stripe', seed: false, source: 'greenhouse' },
   { name: 'Mercury', id: 'mercury', seed: false, source: 'greenhouse' },
+  { name: 'Ramp', id: 'ramp', seed: false, source: 'ashby' },
+  { name: 'Brex', id: 'brex', seed: false, source: 'greenhouse' },
+  { name: 'Plaid', id: 'plaid', seed: false, source: 'ashby' },
+  { name: 'Finix', id: 'finix', seed: false, source: 'lever' },
+  { name: 'Stytch', id: 'stytch', seed: false, source: 'ashby' },
+
+  // Consumer Finance
+  { name: 'Robinhood', id: 'robinhood', seed: false, source: 'greenhouse' },
+  { name: 'Betterment', id: 'betterment', seed: false, source: 'greenhouse' },
+  { name: 'Wealthfront', id: 'wealthfront', seed: false, source: 'lever' },
+  { name: 'Affirm', id: 'affirm', seed: false, source: 'lever' },
+  { name: 'Rocket Money', id: 'truebill', seed: false, source: 'greenhouse' },
+  { name: 'Greenlight', id: 'greenlight', seed: false, source: 'lever' },
+  { name: 'NerdWallet', id: 'nerdwallet', seed: false, source: 'ashby' },
+  { name: 'OnePay', id: 'oneapp', seed: false, source: 'ashby' },
+
+  // Real Estate / PropTech
+  { name: 'Baselane', id: 'baselane', seed: false, source: 'lever' },
+  { name: 'Wealth.com', id: 'wealth-com', seed: false, source: 'ashby' },
+
+  // Predictions / Gambling
   { name: 'Kalshi', id: 'kalshi', seed: false, source: 'greenhouse' },
+  { name: 'Polymarket', id: 'polymarket', seed: false, source: 'ashby' },
+  { name: 'FanDuel', id: 'fanduel', seed: false, source: 'greenhouse' },
+  { name: 'PrizePicks', id: 'prizepicks', seed: false, source: 'greenhouse' },
+  { name: 'Underdog Fantasy', id: 'underdogfantasy', seed: false, source: 'greenhouse' },
+  { name: 'Sleeper', id: 'sleeper', seed: false, source: 'ashby' },
+  { name: 'Fliff', id: 'Fliff', seed: false, source: 'lever' },
+  { name: 'Swish Analytics', id: 'swishanalytics', seed: false, source: 'greenhouse' },
+
+  // Design / Productivity
+  { name: 'Figma', id: 'figma', seed: true, source: 'greenhouse' },
+  { name: 'Notion', id: 'notion', seed: false, source: 'ashby' },
+  { name: 'Linear', id: 'linear', seed: false, source: 'ashby' },
   { name: 'Webflow', id: 'webflow', seed: false, source: 'greenhouse' },
   { name: 'Descript', id: 'descript', seed: false, source: 'greenhouse' },
-  { name: 'Gusto', id: 'gusto', seed: false, source: 'greenhouse' },
-  { name: 'Postman', id: 'postman', seed: false, source: 'greenhouse' },
-  { name: 'Metronome', id: 'metronome', seed: false, source: 'greenhouse' },
-  { name: 'PagerDuty', id: 'pagerduty', seed: false, source: 'greenhouse' },
-  { name: 'Lattice', id: 'lattice', seed: false, source: 'greenhouse' },
-  { name: 'Notion', id: 'notion', seed: false, source: 'ashby' },
-  { name: 'Ramp', id: 'ramp', seed: false, source: 'ashby' },
-  { name: 'Linear', id: 'linear', seed: false, source: 'ashby' },
-  { name: 'Plaid', id: 'plaid', seed: false, source: 'ashby' },
-  { name: 'CoinTracker', id: 'cointracker', seed: false, source: 'ashby' },
-  { name: 'Deepgram', id: 'deepgram', seed: false, source: 'ashby' },
-  { name: 'NerdWallet', id: 'nerdwallet', seed: false, source: 'ashby' },
+  { name: 'Calendly', id: 'calendly', seed: true, source: 'greenhouse' },
   { name: 'Metabase', id: 'metabase', seed: false, source: 'lever' },
-  { name: 'Finix', id: 'finix', seed: false, source: 'lever' },
-  { name: 'Greenlight', id: 'greenlight', seed: false, source: 'lever' },
-  { name: 'Wealth.com', id: 'wealth-com', seed: false, source: 'ashby' },
+
+  // Consumer / Marketplace
+  { name: 'Airbnb', id: 'airbnb', seed: true, source: 'greenhouse' },
+  { name: 'OpenTable', id: 'opentable', seed: true, source: 'greenhouse' },
+  { name: 'Toast', id: 'toast', seed: true, source: 'greenhouse' },
+  { name: 'Postman', id: 'postman', seed: false, source: 'greenhouse' },
+
+  // Infrastructure / Platform
+  { name: 'Twilio', id: 'twilio', seed: true, source: 'greenhouse' },
+  { name: 'PagerDuty', id: 'pagerduty', seed: false, source: 'greenhouse' },
+  { name: 'Deepgram', id: 'deepgram', seed: false, source: 'ashby' },
+  { name: 'Gusto', id: 'gusto', seed: false, source: 'greenhouse' },
+  { name: 'Headway', id: 'headway', seed: true, source: 'greenhouse' },
+  { name: 'Metronome', id: 'metronome', seed: false, source: 'greenhouse' },
+  { name: 'Lattice', id: 'lattice', seed: false, source: 'greenhouse' },
+
+  // Other
+  { name: 'tvScientific', id: 'tvscientificpoweredbypinterest', seed: true, source: 'greenhouse' },
+  { name: 'Alvys', id: 'alvys', seed: true, source: 'greenhouse' },
 ];
 
 export const INCLUDE_KEYWORDS: string[] = [
