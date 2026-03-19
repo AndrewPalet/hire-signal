@@ -114,8 +114,11 @@ function sleep(ms: number): Promise<void> {
 export async function scoreJob(client: Anthropic, job: JobRow): Promise<ScoreResult> {
   const { system, user } = buildScoringPrompt(job);
 
+  const MAX_RETRIES = 4;
+  const BACKOFF_MS = [5_000, 15_000, 30_000, 60_000];
+
   let lastError: unknown;
-  for (let attempt = 0; attempt < 2; attempt++) {
+  for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
     try {
       const response = await client.messages.create({
         model: SCORING_MODEL,
@@ -155,8 +158,19 @@ export async function scoreJob(client: Anthropic, job: JobRow): Promise<ScoreRes
       lastError = err;
       const isRetryable =
         err instanceof Anthropic.APIError && (err.status === 429 || err.status >= 500);
-      if (isRetryable && attempt === 0) {
-        await sleep(2000);
+      if (isRetryable && attempt < MAX_RETRIES - 1) {
+        const retryAfterHeader =
+          err instanceof Anthropic.APIError
+            ? (err.headers?.['retry-after'] ?? null)
+            : null;
+        const retryAfterMs = retryAfterHeader
+          ? parseFloat(retryAfterHeader) * 1000
+          : BACKOFF_MS[attempt];
+        const waitMs = Math.max(retryAfterMs, BACKOFF_MS[attempt]);
+        console.log(
+          `      ⏳ Rate limited (attempt ${attempt + 1}/${MAX_RETRIES}), waiting ${Math.round(waitMs / 1000)}s...`,
+        );
+        await sleep(waitMs);
         continue;
       }
       throw lastError;

@@ -7,7 +7,7 @@ import type { DatabaseAdapter } from '../shared/db.js';
 import type { JobRow, ScoreResult } from '../shared/types.js';
 import { scoreJob } from './claude.js';
 
-const CONCURRENCY = 3;
+const CONCURRENCY = 2;
 
 interface JobScoreResult {
   job: JobRow;
