@@ -6,3 +6,4 @@ profile/scoring-brief.md
 *.db-wal
 *.db-shm
 .yarn/
+.DS_Store
