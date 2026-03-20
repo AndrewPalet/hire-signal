@@ -36,6 +36,7 @@ export const COMPANIES: Company[] = [
   { name: 'Plaid', id: 'plaid', seed: false, source: 'ashby' },
   { name: 'Finix', id: 'finix', seed: false, source: 'lever' },
   { name: 'Stytch', id: 'stytch', seed: false, source: 'ashby' },
+  { name: 'SpotOn', id: 'spoton', seed: false, source: 'ashby' },
 
   // Consumer Finance
   { name: 'Robinhood', id: 'robinhood', seed: false, source: 'greenhouse' },
@@ -46,10 +47,16 @@ export const COMPANIES: Company[] = [
   { name: 'Greenlight', id: 'greenlight', seed: false, source: 'lever' },
   { name: 'NerdWallet', id: 'nerdwallet', seed: false, source: 'ashby' },
   { name: 'OnePay', id: 'oneapp', seed: false, source: 'ashby' },
+  { name: 'Flex', id: 'flex', seed: false, source: 'greenhouse' },
+  { name: 'Chime', id: 'chime', seed: false, source: 'greenhouse' },
+  { name: 'Carta', id: 'carta', seed: false, source: 'greenhouse' },
+  { name: 'Upgrade', id: 'upgrade', seed: false, source: 'greenhouse' },
+  { name: 'Pilot', id: 'pilothq', seed: false, source: 'greenhouse' },
 
   // Real Estate / PropTech
   { name: 'Baselane', id: 'baselane', seed: false, source: 'lever' },
   { name: 'Wealth.com', id: 'wealth-com', seed: false, source: 'ashby' },
+  { name: 'Qualia', id: 'qualia', seed: false, source: 'greenhouse' },
 
   // Predictions / Gambling
   { name: 'Kalshi', id: 'kalshi', seed: false, source: 'greenhouse' },
@@ -60,6 +67,17 @@ export const COMPANIES: Company[] = [
   { name: 'Sleeper', id: 'sleeper', seed: false, source: 'ashby' },
   { name: 'Fliff', id: 'Fliff', seed: false, source: 'lever' },
 
+  // SaaS / B2B
+  { name: 'Gong', id: 'gongio', seed: false, source: 'greenhouse' },
+  { name: 'Pendo', id: 'pendo', seed: false, source: 'greenhouse' },
+  { name: 'LaunchDarkly', id: 'launchdarkly', seed: false, source: 'greenhouse' },
+  { name: 'Contentful', id: 'contentful', seed: false, source: 'greenhouse' },
+  { name: 'Intercom', id: 'intercom', seed: false, source: 'greenhouse' },
+  { name: 'Checkr', id: 'checkr', seed: false, source: 'greenhouse' },
+  { name: 'Iterable', id: 'iterable', seed: false, source: 'greenhouse' },
+  { name: 'Outreach', id: 'outreach', seed: false, source: 'lever' },
+  { name: 'Podium', id: 'podium81', seed: false, source: 'greenhouse' },
+
   // Design / Productivity
   { name: 'Figma', id: 'figma', seed: true, source: 'greenhouse' },
   { name: 'Notion', id: 'notion', seed: false, source: 'ashby' },
@@ -68,12 +86,17 @@ export const COMPANIES: Company[] = [
   { name: 'Descript', id: 'descript', seed: false, source: 'greenhouse' },
   { name: 'Calendly', id: 'calendly', seed: true, source: 'greenhouse' },
   { name: 'Metabase', id: 'metabase', seed: false, source: 'lever' },
+  { name: 'Asana', id: 'asana', seed: false, source: 'greenhouse' },
 
   // Consumer / Marketplace
   { name: 'Airbnb', id: 'airbnb', seed: true, source: 'greenhouse' },
   { name: 'OpenTable', id: 'opentable', seed: true, source: 'greenhouse' },
   { name: 'Toast', id: 'toast', seed: true, source: 'greenhouse' },
   { name: 'Postman', id: 'postman', seed: false, source: 'greenhouse' },
+  { name: 'Thumbtack', id: 'thumbtack', seed: false, source: 'greenhouse' },
+  { name: 'SeatGeek', id: 'seatgeek', seed: false, source: 'greenhouse' },
+  { name: 'Strava', id: 'strava', seed: false, source: 'ashby' },
+  { name: 'Discord', id: 'discord', seed: false, source: 'greenhouse' },
 
   // Infrastructure / Platform
   { name: '1Password', id: '1password', seed: false, source: 'ashby' },
@@ -84,10 +107,15 @@ export const COMPANIES: Company[] = [
   { name: 'Headway', id: 'headway', seed: true, source: 'greenhouse' },
   { name: 'Metronome', id: 'metronome', seed: false, source: 'greenhouse' },
   { name: 'Lattice', id: 'lattice', seed: false, source: 'greenhouse' },
+  { name: 'Kong', id: 'kong', seed: false, source: 'ashby' },
+  { name: 'Scale AI', id: 'scaleai', seed: false, source: 'greenhouse' },
+  { name: 'Collibra', id: 'collibra', seed: false, source: 'greenhouse' },
 
   // Other
   { name: 'tvScientific', id: 'tvscientificpoweredbypinterest', seed: true, source: 'greenhouse' },
   { name: 'Alvys', id: 'alvys', seed: true, source: 'greenhouse' },
+  { name: 'Benchling', id: 'benchling', seed: false, source: 'ashby' },
+  { name: 'Verkada', id: 'verkada', seed: false, source: 'greenhouse' },
 ];
 
 export const INCLUDE_KEYWORDS: string[] = [
