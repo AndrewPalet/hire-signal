@@ -15,7 +15,7 @@ export const COMPANIES: Company[] = [
   { name: 'Phantom', id: 'phantom', seed: false, source: 'ashby' },
   { name: 'Alchemy', id: 'alchemy', seed: false, source: 'greenhouse' },
   { name: 'BitGo', id: 'bitgo', seed: false, source: 'greenhouse' },
-  { name: 'Chainalysis', id: 'chainalysis', seed: false, source: 'greenhouse' },
+  { name: 'Chainalysis', id: 'chainalysis-careers', seed: false, source: 'ashby' },
   { name: 'Fireblocks', id: 'fireblocks', seed: false, source: 'greenhouse' },
   { name: 'Blockchain.com', id: 'blockchain', seed: false, source: 'greenhouse' },
   { name: 'Messari', id: 'messari', seed: false, source: 'greenhouse' },
@@ -76,6 +76,7 @@ export const COMPANIES: Company[] = [
   { name: 'Postman', id: 'postman', seed: false, source: 'greenhouse' },
 
   // Infrastructure / Platform
+  { name: '1Password', id: '1password', seed: false, source: 'ashby' },
   { name: 'Twilio', id: 'twilio', seed: true, source: 'greenhouse' },
   { name: 'PagerDuty', id: 'pagerduty', seed: false, source: 'greenhouse' },
   { name: 'Deepgram', id: 'deepgram', seed: false, source: 'ashby' },
