@@ -10,6 +10,7 @@ export type { JobRow, ScoreResult, JobInput, DbStats };
 export interface DatabaseAdapter {
   init(): Promise<void>;
   jobExists(id: string): Promise<boolean>;
+  getJobIdsByCompany(companyId: string): Promise<Set<string>>;
   companyHasJobs(companyId: string): Promise<boolean>;
   insertJob(job: JobInput): Promise<void>;
   updateJobDescription(id: string, description: string): Promise<void>;
@@ -93,6 +94,13 @@ class LocalDatabase implements DatabaseAdapter {
 
   async jobExists(id: string): Promise<boolean> {
     return this.db.prepare('SELECT 1 FROM jobs WHERE id = ?').get(id) !== undefined;
+  }
+
+  async getJobIdsByCompany(companyId: string): Promise<Set<string>> {
+    const rows = this.db
+      .prepare('SELECT id FROM jobs WHERE company_id = ?')
+      .all(companyId) as { id: string }[];
+    return new Set(rows.map((r) => r.id));
   }
 
   async companyHasJobs(companyId: string): Promise<boolean> {
@@ -222,6 +230,14 @@ class TursoDatabase implements DatabaseAdapter {
       args: [id],
     });
     return result.rows.length > 0;
+  }
+
+  async getJobIdsByCompany(companyId: string): Promise<Set<string>> {
+    const result = await this.client.execute({
+      sql: 'SELECT id FROM jobs WHERE company_id = ?',
+      args: [companyId],
+    });
+    return new Set(result.rows.map((r) => String(r.id)));
   }
 
   async companyHasJobs(companyId: string): Promise<boolean> {

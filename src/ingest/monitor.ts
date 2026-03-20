@@ -5,7 +5,7 @@ import { createDatabase, type DatabaseAdapter } from '../shared/db.js';
 import { passesFilter } from './filter.js';
 import { getFetcher } from './fetcher.js';
 
-const CONCURRENCY = 5;
+const CONCURRENCY = 15;
 
 interface MatchInfo {
   title: string;
@@ -43,13 +43,16 @@ async function processCompany(company: Company, db: DatabaseAdapter): Promise<Co
   try {
     const fetcher = getFetcher(company.source);
     result.isSeedRun = company.seed && !(await db.companyHasJobs(company.id));
-    const listings = await fetcher.fetchListings(company.id);
+    const [listings, knownIds] = await Promise.all([
+      fetcher.fetchListings(company.id),
+      db.getJobIdsByCompany(company.id),
+    ]);
     result.listings = listings.length;
 
     for (const listing of listings) {
       const id = `${company.source}_${company.id}_${listing.externalId}`;
 
-      if (await db.jobExists(id)) {
+      if (knownIds.has(id)) {
         result.alreadySeen++;
         continue;
       }
