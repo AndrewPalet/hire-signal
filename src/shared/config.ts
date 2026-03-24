@@ -157,6 +157,7 @@ export const COMPANIES: Company[] = [
   { name: 'Udacity', id: 'udacity', seed: false, source: 'greenhouse' },
   { name: 'Weee!', id: 'weee', seed: false, source: 'greenhouse' },
   { name: 'WHOOP', id: 'whoop', seed: false, source: 'lever' },
+  { name: 'Zwift', id: 'zwift', seed: false, source: 'greenhouse' },
 
   // Infrastructure / Platform
   { name: '1Password', id: '1password', seed: false, source: 'ashby' },
