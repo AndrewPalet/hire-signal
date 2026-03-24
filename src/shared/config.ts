@@ -112,6 +112,8 @@ export const COMPANIES: Company[] = [
   { name: 'Unqork', id: 'unqork', seed: false, source: 'greenhouse' },
   { name: 'WorkBoard', id: 'workboard', seed: false, source: 'greenhouse' },
   { name: 'Zenoti', id: 'zenoti', seed: false, source: 'greenhouse' },
+  { name: 'Forethought', id: 'forethought', seed: false, source: 'greenhouse' },
+  { name: 'Secureframe', id: 'secureframe', seed: false, source: 'lever' },
 
   // Design / Productivity
   { name: 'Figma', id: 'figma', seed: true, source: 'greenhouse' },
