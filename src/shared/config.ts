@@ -206,6 +206,8 @@ export const COMPANIES: Company[] = [
   { name: 'MarkForged', id: 'markforged', seed: false, source: 'greenhouse' },
   { name: 'Owl Labs', id: 'owllabs', seed: false, source: 'greenhouse' },
   { name: 'Skydio', id: 'skydio', seed: false, source: 'ashby' },
+  { name: 'Imagen Technologies', id: 'imagentechnologies', seed: false, source: 'greenhouse' },
+  { name: 'Vannevar Labs', id: 'vannevarlabs', seed: false, source: 'greenhouse' },
 ];
 
 export const INCLUDE_KEYWORDS: string[] = [
