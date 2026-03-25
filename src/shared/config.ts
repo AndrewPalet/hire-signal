@@ -117,6 +117,8 @@ export const COMPANIES: Company[] = [
   { name: 'Givebutter', id: 'givebutter', seed: false, source: 'ashby' },
   { name: 'Vanta', id: 'vanta', seed: false, source: 'ashby' },
   { name: 'Anrok', id: 'anrok', seed: false, source: 'ashby' },
+  { name: 'Regrello', id: 'regrello', seed: false, source: 'lever' },
+  { name: 'Hightouch', id: 'hightouch', seed: false, source: 'greenhouse' },
 
   // Design / Productivity
   { name: 'Figma', id: 'figma', seed: true, source: 'greenhouse' },
@@ -178,6 +180,7 @@ export const COMPANIES: Company[] = [
   { name: 'Collibra', id: 'collibra', seed: false, source: 'greenhouse' },
   { name: 'Tailscale', id: 'tailscale', seed: false, source: 'greenhouse' },
   { name: 'RevenueCat', id: 'revenuecat', seed: false, source: 'ashby' },
+  { name: 'Render', id: 'render', seed: false, source: 'ashby' },
   { name: 'Algolia', id: 'algolia', seed: false, source: 'greenhouse' },
   { name: 'Cerebras', id: 'cerebrassystems', seed: false, source: 'greenhouse' },
   { name: 'Coalition', id: 'coalition', seed: false, source: 'greenhouse' },
@@ -219,6 +222,7 @@ export const COMPANIES: Company[] = [
   { name: 'Getlabs', id: 'getlabs', seed: false, source: 'lever' },
   { name: 'Higharc', id: 'higharc', seed: false, source: 'ashby' },
   { name: 'Pano AI', id: 'pano-ai', seed: false, source: 'ashby' },
+  { name: 'Solace', id: 'solace', seed: false, source: 'ashby' },
 ];
 
 export const INCLUDE_KEYWORDS: string[] = [
