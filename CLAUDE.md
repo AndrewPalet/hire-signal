@@ -54,6 +54,26 @@ This surfaces any public Greenhouse board pages indexed by search engines.
 - **Metabase**: Does not use Greenhouse at all — they use **Lever** (`jobs.lever.co/metabase`). Always verify the ATS platform before assuming Greenhouse.
 - **Retool**: Does not use Ashby — they use **Gem** (`jobs.gem.com/retool`). The Ashby API returns 0 jobs for them.
 
+## Inline Scripts
+
+When running inline TypeScript with `npx tsx -e`, import dotenv at the top instead of sourcing `.env` in the shell. This ensures the command matches the allowed permission pattern `Bash(npx tsx -e:*)`.
+
+```bash
+# Do this:
+npx tsx -e "
+import 'dotenv/config';
+async function main() {
+  const { createDatabase } = await import('./src/shared/db.js');
+  const db = await createDatabase();
+  // ...
+}
+main();
+"
+
+# NOT this (breaks permission matching):
+set -a && source .env && set +a && npx tsx -e "..."
+```
+
 ## Project Commands
 
 - `yarn monitor` — run the job monitor
