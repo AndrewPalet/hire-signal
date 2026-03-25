@@ -25,6 +25,8 @@ export interface JobRow {
   overall_reasoning?: string | null;
   dealbreaker?: string | null;
   scored_at?: string | null;
+  seen_at?: string | null;
+  discord_message_id?: string | null;
 }
 
 export interface ScoreResult {

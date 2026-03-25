@@ -282,6 +282,8 @@ export const SCORING_BRIEF_PATH = 'profile/scoring-brief.md';
 export const NOTIFICATION_THRESHOLD = 7;
 
 export const DISCORD_ERROR_WEBHOOK_URL = process.env.DISCORD_ERROR_WEBHOOK_URL ?? '';
+export const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN ?? '';
+export const DISCORD_CHANNEL_ID = process.env.DISCORD_CHANNEL_ID ?? '';
 
 export const DB_BACKEND = (process.env.DB_BACKEND ?? 'local') as 'local' | 'turso';
 export const TURSO_DATABASE_URL = process.env.TURSO_DATABASE_URL ?? '';

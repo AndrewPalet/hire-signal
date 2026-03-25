@@ -18,6 +18,8 @@ export interface DatabaseAdapter {
   saveJobScore(id: string, score: ScoreResult): Promise<void>;
   getNotifiableJobs(): Promise<JobRow[]>;
   markJobsNotified(ids: string[]): Promise<void>;
+  markJobSeen(id: string): Promise<boolean>;
+  setDiscordMessageId(jobIds: string[], messageId: string): Promise<void>;
   getStats(): Promise<DbStats>;
   close(): Promise<void>;
 }
@@ -62,6 +64,8 @@ const SCORING_COLUMNS = [
   'overall_reasoning TEXT',
   'dealbreaker TEXT',
   'scored_at TEXT',
+  'seen_at TEXT',
+  'discord_message_id TEXT',
 ];
 
 // ── LocalDatabase (better-sqlite3) ─────────────────────────────────────
@@ -97,9 +101,9 @@ class LocalDatabase implements DatabaseAdapter {
   }
 
   async getJobIdsByCompany(companyId: string): Promise<Set<string>> {
-    const rows = this.db
-      .prepare('SELECT id FROM jobs WHERE company_id = ?')
-      .all(companyId) as { id: string }[];
+    const rows = this.db.prepare('SELECT id FROM jobs WHERE company_id = ?').all(companyId) as {
+      id: string;
+    }[];
     return new Set(rows.map((r) => r.id));
   }
 
@@ -170,6 +174,21 @@ class LocalDatabase implements DatabaseAdapter {
     if (ids.length === 0) return;
     const placeholders = ids.map(() => '?').join(', ');
     this.db.prepare(`UPDATE jobs SET notified = 1 WHERE id IN (${placeholders})`).run(...ids);
+  }
+
+  async markJobSeen(id: string): Promise<boolean> {
+    const result = this.db
+      .prepare("UPDATE jobs SET seen_at = datetime('now') WHERE id = ? AND seen_at IS NULL")
+      .run(id);
+    return result.changes > 0;
+  }
+
+  async setDiscordMessageId(jobIds: string[], messageId: string): Promise<void> {
+    if (jobIds.length === 0) return;
+    const placeholders = jobIds.map(() => '?').join(', ');
+    this.db
+      .prepare(`UPDATE jobs SET discord_message_id = ? WHERE id IN (${placeholders})`)
+      .run(messageId, ...jobIds);
   }
 
   async getStats(): Promise<DbStats> {
@@ -341,6 +360,23 @@ class TursoDatabase implements DatabaseAdapter {
     });
   }
 
+  async markJobSeen(id: string): Promise<boolean> {
+    const result = await this.client.execute({
+      sql: "UPDATE jobs SET seen_at = datetime('now') WHERE id = ? AND seen_at IS NULL",
+      args: [id],
+    });
+    return result.rowsAffected > 0;
+  }
+
+  async setDiscordMessageId(jobIds: string[], messageId: string): Promise<void> {
+    if (jobIds.length === 0) return;
+    const placeholders = jobIds.map(() => '?').join(', ');
+    await this.client.execute({
+      sql: `UPDATE jobs SET discord_message_id = ? WHERE id IN (${placeholders})`,
+      args: [messageId, ...jobIds],
+    });
+  }
+
   async getStats(): Promise<DbStats> {
     const [totalR, filteredR, seededR, scoredR] = await Promise.all([
       this.client.execute('SELECT count(*) as c FROM jobs'),
@@ -391,6 +427,8 @@ function rowToJobRow(row: Record<string, unknown>): JobRow {
     overall_reasoning: row.overall_reasoning == null ? null : String(row.overall_reasoning),
     dealbreaker: row.dealbreaker == null ? null : String(row.dealbreaker),
     scored_at: row.scored_at == null ? null : String(row.scored_at),
+    seen_at: row.seen_at == null ? null : String(row.seen_at),
+    discord_message_id: row.discord_message_id == null ? null : String(row.discord_message_id),
   };
 }
 

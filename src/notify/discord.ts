@@ -7,11 +7,26 @@ export interface DiscordEmbed {
   footer?: { text: string };
 }
 
+export interface DiscordButton {
+  type: 2;
+  style: number;
+  label: string;
+  custom_id: string;
+  disabled?: boolean;
+}
+
+export interface DiscordActionRow {
+  type: 1;
+  components: DiscordButton[];
+}
+
 export interface SendResult {
   batch: number;
   success: boolean;
   status?: number;
   retryAfter?: number;
+  messageId?: string;
+  jobIds?: string[];
 }
 
 const COLOR_GREEN = 0x27ae60;
@@ -21,6 +36,9 @@ const COLOR_YELLOW = 0xf2c94c;
 const MAX_FIELD_VALUE = 1024;
 const MAX_EMBED_CHARS = 6000;
 const MAX_WEBHOOK_CHARS = 6000;
+const MAX_BUTTONS_PER_ROW = 5;
+const MAX_ACTION_ROWS = 5;
+const MAX_BUTTONS_PER_MESSAGE = MAX_BUTTONS_PER_ROW * MAX_ACTION_ROWS; // 25
 const FOOTER_TEXT = 'Job Monitor — Scored with Claude Sonnet 4';
 
 function scoreColor(score: number): number {
@@ -118,6 +136,27 @@ export function buildEmbeds(jobs: JobRow[]): DiscordEmbed[] {
   return embeds;
 }
 
+export function buildComponents(jobs: JobRow[]): DiscordActionRow[] {
+  const buttons: DiscordButton[] = jobs.slice(0, MAX_BUTTONS_PER_MESSAGE).map((job) => {
+    const label = truncate(`${job.company_name} — ${job.title}`, 80);
+    return {
+      type: 2,
+      style: 2, // SECONDARY (grey)
+      label: `👁 ${label}`,
+      custom_id: `seen:${job.id}`,
+    };
+  });
+
+  const rows: DiscordActionRow[] = [];
+  for (let i = 0; i < buttons.length; i += MAX_BUTTONS_PER_ROW) {
+    rows.push({
+      type: 1,
+      components: buttons.slice(i, i + MAX_BUTTONS_PER_ROW),
+    });
+  }
+  return rows;
+}
+
 function embedCharCount(embed: DiscordEmbed): number {
   return (
     (embed.title?.length ?? 0) +
@@ -128,6 +167,36 @@ function embedCharCount(embed: DiscordEmbed): number {
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export async function sendBotMessage(
+  token: string,
+  channelId: string,
+  embeds: DiscordEmbed[],
+  components: DiscordActionRow[],
+): Promise<{ success: boolean; status?: number; messageId?: string; retryAfter?: number }> {
+  const res = await fetch(`https://discord.com/api/v10/channels/${channelId}/messages`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bot ${token}`,
+    },
+    body: JSON.stringify({ embeds, components }),
+  });
+
+  if (res.status === 429) {
+    const body = (await res.json()) as { retry_after?: number };
+    return { success: false, status: 429, retryAfter: body.retry_after ?? 0 };
+  }
+
+  if (!res.ok) {
+    const body = await res.text();
+    console.log(`  Discord error body: ${body}`);
+    return { success: false, status: res.status };
+  }
+
+  const data = (await res.json()) as { id: string };
+  return { success: true, status: res.status, messageId: data.id };
 }
 
 export async function sendWebhook(
@@ -184,6 +253,116 @@ export async function sendWebhook(
     } catch (err) {
       console.log(`  Batch ${i + 1} failed: ${err instanceof Error ? err.message : String(err)}`);
       results.push({ batch: i + 1, success: false });
+    }
+  }
+
+  return results;
+}
+
+interface BatchGroup {
+  embeds: DiscordEmbed[];
+  components: DiscordActionRow[];
+  jobIds: string[];
+}
+
+export function buildBatches(jobs: JobRow[]): BatchGroup[] {
+  const embeds = buildEmbeds(jobs);
+  const batches: BatchGroup[] = [];
+
+  // We need to respect three limits per message:
+  // 1. Max 10 embeds
+  // 2. Max 6000 total embed chars
+  // 3. Max 25 buttons (5 action rows × 5 buttons)
+  // We track which jobs belong to each batch for discord_message_id mapping
+
+  let currentEmbeds: DiscordEmbed[] = [];
+  let currentJobs: JobRow[] = [];
+  let currentChars = 0;
+
+  // Map embeds back to jobs by matching field names to job titles
+  const jobsByTitle = new Map<string, JobRow>();
+  for (const job of jobs) {
+    jobsByTitle.set(job.title, job);
+    jobsByTitle.set(`${job.company_name} — ${job.title}`, job);
+  }
+
+  function flushBatch() {
+    if (currentEmbeds.length === 0) return;
+    const components = buildComponents(currentJobs);
+    batches.push({
+      embeds: currentEmbeds,
+      components,
+      jobIds: currentJobs.map((j) => j.id),
+    });
+    currentEmbeds = [];
+    currentJobs = [];
+    currentChars = 0;
+  }
+
+  for (const embed of embeds) {
+    const chars = embedCharCount(embed);
+    // Extract jobs from this embed's fields
+    const embedJobs: JobRow[] = [];
+    for (const field of embed.fields) {
+      const job = jobsByTitle.get(field.name);
+      if (job) embedJobs.push(job);
+    }
+
+    const wouldExceedEmbeds = currentEmbeds.length >= 10;
+    const wouldExceedChars = currentChars + chars > MAX_WEBHOOK_CHARS;
+    const wouldExceedButtons = currentJobs.length + embedJobs.length > MAX_BUTTONS_PER_MESSAGE;
+
+    if (currentEmbeds.length > 0 && (wouldExceedEmbeds || wouldExceedChars || wouldExceedButtons)) {
+      flushBatch();
+    }
+
+    currentEmbeds.push(embed);
+    currentJobs.push(...embedJobs);
+    currentChars += chars;
+  }
+
+  flushBatch();
+  return batches;
+}
+
+export async function sendBotBatches(
+  token: string,
+  channelId: string,
+  batches: BatchGroup[],
+): Promise<SendResult[]> {
+  const results: SendResult[] = [];
+
+  for (let i = 0; i < batches.length; i++) {
+    if (i > 0) {
+      await sleep(2000);
+    }
+
+    const batch = batches[i];
+    try {
+      const result = await sendBotMessage(token, channelId, batch.embeds, batch.components);
+
+      if (result.retryAfter !== undefined && result.status === 429) {
+        console.log(`  Rate limited. retry_after: ${result.retryAfter}s. Stopping.`);
+        results.push({
+          batch: i + 1,
+          success: false,
+          status: 429,
+          retryAfter: result.retryAfter,
+          jobIds: batch.jobIds,
+        });
+        break;
+      }
+
+      results.push({
+        batch: i + 1,
+        success: result.success,
+        status: result.status,
+        messageId: result.messageId,
+        jobIds: batch.jobIds,
+      });
+    } catch (err) {
+      console.log(`  Batch ${i + 1} failed: ${err instanceof Error ? err.message : String(err)}`);
+      results.push({ batch: i + 1, success: false, jobIds: batch.jobIds });
     }
   }
 

@@ -160,9 +160,7 @@ export async function scoreJob(client: Anthropic, job: JobRow): Promise<ScoreRes
         err instanceof Anthropic.APIError && (err.status === 429 || err.status >= 500);
       if (isRetryable && attempt < MAX_RETRIES - 1) {
         const retryAfterHeader =
-          err instanceof Anthropic.APIError
-            ? (err.headers?.['retry-after'] ?? null)
-            : null;
+          err instanceof Anthropic.APIError ? (err.headers?.['retry-after'] ?? null) : null;
         const retryAfterMs = retryAfterHeader
           ? parseFloat(retryAfterHeader) * 1000
           : BACKOFF_MS[attempt];

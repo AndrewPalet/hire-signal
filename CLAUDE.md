@@ -74,6 +74,30 @@ main();
 set -a && source .env && set +a && npx tsx -e "..."
 ```
 
+## Discord Bot & Interactions Worker
+
+Job notifications use a Discord Bot (not webhooks) to support interactive "Seen" buttons. Error alerts still use the webhook via `DISCORD_ERROR_WEBHOOK_URL`.
+
+### Bot Setup
+1. Create app at Discord Developer Portal, create Bot, copy token
+2. Invite bot with permissions 83968 (Send Messages, Embed Links, Read Message History)
+3. Set `DISCORD_BOT_TOKEN`, `DISCORD_CHANNEL_ID`, `DISCORD_APP_ID`, `DISCORD_PUBLIC_KEY` in `.env` and GitHub Secrets
+
+### Cloudflare Worker (`worker/`)
+Handles Discord interaction callbacks (button clicks). Verifies ed25519 signatures, updates Turso, and edits the Discord message.
+
+```bash
+cd worker && yarn install
+npx wrangler login
+npx wrangler secret put DISCORD_PUBLIC_KEY
+npx wrangler secret put DISCORD_BOT_TOKEN
+npx wrangler secret put TURSO_DATABASE_URL
+npx wrangler secret put TURSO_AUTH_TOKEN
+npx wrangler deploy
+```
+
+Set the deployed Worker URL as the Interactions Endpoint URL in Discord Developer Portal → General Information.
+
 ## Project Commands
 
 - `yarn monitor` — run the job monitor
