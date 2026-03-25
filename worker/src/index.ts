@@ -15,6 +15,7 @@ interface DiscordInteraction {
     component_type?: number;
   };
   message?: {
+    id: string;
     embeds: Array<{
       title?: string;
       color?: number;
@@ -72,54 +73,67 @@ export default {
     // Handle button clicks
     if (interaction.type === MESSAGE_COMPONENT) {
       const customId = interaction.data?.custom_id;
-      if (!customId?.startsWith('seen:')) {
+      if (!customId?.startsWith('seen_company:')) {
         return Response.json({ type: PONG });
       }
 
-      const jobId = customId.slice(5);
+      const companyId = customId.slice('seen_company:'.length);
+      const messageId = interaction.message?.id;
 
-      // Update Turso
-      await executeSQL(
-        env.TURSO_DATABASE_URL,
-        env.TURSO_AUTH_TOKEN,
-        "UPDATE jobs SET seen_at = datetime('now') WHERE id = ? AND seen_at IS NULL",
-        [jobId],
-      );
+      // Mark all jobs for this company in this message as seen
+      if (messageId) {
+        await executeSQL(
+          env.TURSO_DATABASE_URL,
+          env.TURSO_AUTH_TOKEN,
+          "UPDATE jobs SET seen_at = datetime('now') WHERE company_id = ? AND discord_message_id = ? AND seen_at IS NULL",
+          [companyId, messageId],
+        );
+      }
 
-      // Modify the message: add ✅ prefix to matching embed field, disable button
       const embeds = interaction.message?.embeds ?? [];
       const components = interaction.message?.components ?? [];
 
-      // Find and update the matching button, extract its label to find the embed field
-      let buttonLabel = '';
-      const updatedComponents = components.map((row) => ({
-        ...row,
-        components: row.components.map((btn) => {
-          if (btn.custom_id === customId) {
-            buttonLabel = btn.label;
-            return {
-              ...btn,
-              style: 3, // SUCCESS (green)
-              label: '✅ Seen',
-              disabled: true,
-            };
-          }
-          return btn;
-        }),
-      }));
+      // Remove the clicked button
+      let companyName = '';
+      const updatedComponents = components
+        .map((row) => ({
+          ...row,
+          components: row.components.filter((btn) => {
+            if (btn.custom_id === customId) {
+              // Extract company name: "👁 CompanyName" → "CompanyName"
+              companyName = btn.label.replace(/^👁\s*/, '');
+              return false;
+            }
+            return true;
+          }),
+        }))
+        .filter((row) => row.components.length > 0);
 
-      // Find the matching embed field by job title and prefix with ✅
-      // The button label is "👁 Company — Title", the field name is either "Title" or "Company — Title"
-      const fieldNameFromButton = buttonLabel.replace(/^👁\s*/, '');
-      const updatedEmbeds = embeds.map((embed) => ({
-        ...embed,
-        fields: embed.fields?.map((field) => {
-          if (field.name === fieldNameFromButton && !field.name.startsWith('✅')) {
-            return { ...field, name: `✅ ${field.name}` };
-          }
-          return field;
-        }),
-      }));
+      // Prefix matching embed fields with ✅
+      // Company-specific embeds: title matches company name, prefix all fields
+      // Misc "New Job Matches" embed: fields are "Company — Title", prefix those starting with company name
+      const updatedEmbeds = embeds.map((embed) => {
+        if (embed.title === companyName) {
+          // Company-specific embed — mark all fields
+          return {
+            ...embed,
+            fields: embed.fields?.map((field) =>
+              field.name.startsWith('✅') ? field : { ...field, name: `✅ ${field.name}` },
+            ),
+          };
+        }
+        // Misc embed — mark fields that start with "CompanyName — "
+        const prefix = `${companyName} — `;
+        return {
+          ...embed,
+          fields: embed.fields?.map((field) => {
+            if (field.name.startsWith(prefix) && !field.name.startsWith('✅')) {
+              return { ...field, name: `✅ ${field.name}` };
+            }
+            return field;
+          }),
+        };
+      });
 
       return Response.json({
         type: UPDATE_MESSAGE,

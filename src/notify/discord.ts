@@ -137,15 +137,20 @@ export function buildEmbeds(jobs: JobRow[]): DiscordEmbed[] {
 }
 
 export function buildComponents(jobs: JobRow[]): DiscordActionRow[] {
-  const buttons: DiscordButton[] = jobs.slice(0, MAX_BUTTONS_PER_MESSAGE).map((job) => {
-    const label = truncate(`${job.company_name} — ${job.title}`, 80);
-    return {
+  // One button per unique company
+  const seen = new Set<string>();
+  const buttons: DiscordButton[] = [];
+  for (const job of jobs) {
+    if (seen.has(job.company_id)) continue;
+    seen.add(job.company_id);
+    if (buttons.length >= MAX_BUTTONS_PER_MESSAGE) break;
+    buttons.push({
       type: 2,
       style: 2, // SECONDARY (grey)
-      label: `👁 ${label}`,
-      custom_id: `seen:${job.id}`,
-    };
-  });
+      label: truncate(`👁 ${job.company_name}`, 80),
+      custom_id: `seen_company:${job.company_id}`,
+    });
+  }
 
   const rows: DiscordActionRow[] = [];
   for (let i = 0; i < buttons.length; i += MAX_BUTTONS_PER_ROW) {
@@ -277,6 +282,7 @@ export function buildBatches(jobs: JobRow[]): BatchGroup[] {
 
   let currentEmbeds: DiscordEmbed[] = [];
   let currentJobs: JobRow[] = [];
+  let currentCompanies = new Set<string>();
   let currentChars = 0;
 
   // Map embeds back to jobs by matching field names to job titles
@@ -296,6 +302,7 @@ export function buildBatches(jobs: JobRow[]): BatchGroup[] {
     });
     currentEmbeds = [];
     currentJobs = [];
+    currentCompanies = new Set();
     currentChars = 0;
   }
 
@@ -308,9 +315,12 @@ export function buildBatches(jobs: JobRow[]): BatchGroup[] {
       if (job) embedJobs.push(job);
     }
 
+    const newCompanies = new Set(embedJobs.map((j) => j.company_id));
+    const mergedCompanyCount = new Set([...currentCompanies, ...newCompanies]).size;
+
     const wouldExceedEmbeds = currentEmbeds.length >= 10;
     const wouldExceedChars = currentChars + chars > MAX_WEBHOOK_CHARS;
-    const wouldExceedButtons = currentJobs.length + embedJobs.length > MAX_BUTTONS_PER_MESSAGE;
+    const wouldExceedButtons = mergedCompanyCount > MAX_BUTTONS_PER_MESSAGE;
 
     if (currentEmbeds.length > 0 && (wouldExceedEmbeds || wouldExceedChars || wouldExceedButtons)) {
       flushBatch();
@@ -318,6 +328,7 @@ export function buildBatches(jobs: JobRow[]): BatchGroup[] {
 
     currentEmbeds.push(embed);
     currentJobs.push(...embedJobs);
+    for (const c of newCompanies) currentCompanies.add(c);
     currentChars += chars;
   }
 
