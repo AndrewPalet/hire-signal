@@ -1,7 +1,7 @@
 node_modules/
 data/
 .env
-profile/scoring-brief.md
+profile/
 *.db
 *.db-wal
 *.db-shm

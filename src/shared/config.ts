@@ -114,6 +114,9 @@ export const COMPANIES: Company[] = [
   { name: 'Zenoti', id: 'zenoti', seed: false, source: 'greenhouse' },
   { name: 'Forethought', id: 'forethought', seed: false, source: 'greenhouse' },
   { name: 'Secureframe', id: 'secureframe', seed: false, source: 'lever' },
+  { name: 'Givebutter', id: 'givebutter', seed: false, source: 'ashby' },
+  { name: 'Vanta', id: 'vanta', seed: false, source: 'ashby' },
+  { name: 'Anrok', id: 'anrok', seed: false, source: 'ashby' },
 
   // Design / Productivity
   { name: 'Figma', id: 'figma', seed: true, source: 'greenhouse' },
@@ -173,6 +176,8 @@ export const COMPANIES: Company[] = [
   { name: 'Kong', id: 'kong', seed: false, source: 'ashby' },
   { name: 'Scale AI', id: 'scaleai', seed: false, source: 'greenhouse' },
   { name: 'Collibra', id: 'collibra', seed: false, source: 'greenhouse' },
+  { name: 'Tailscale', id: 'tailscale', seed: false, source: 'greenhouse' },
+  { name: 'RevenueCat', id: 'revenuecat', seed: false, source: 'ashby' },
   { name: 'Algolia', id: 'algolia', seed: false, source: 'greenhouse' },
   { name: 'Cerebras', id: 'cerebrassystems', seed: false, source: 'greenhouse' },
   { name: 'Coalition', id: 'coalition', seed: false, source: 'greenhouse' },
@@ -210,6 +215,10 @@ export const COMPANIES: Company[] = [
   { name: 'Skydio', id: 'skydio', seed: false, source: 'ashby' },
   { name: 'Imagen Technologies', id: 'imagentechnologies', seed: false, source: 'greenhouse' },
   { name: 'Vannevar Labs', id: 'vannevarlabs', seed: false, source: 'greenhouse' },
+  { name: 'Cape', id: 'cape', seed: false, source: 'ashby' },
+  { name: 'Getlabs', id: 'getlabs', seed: false, source: 'lever' },
+  { name: 'Higharc', id: 'higharc', seed: false, source: 'ashby' },
+  { name: 'Pano AI', id: 'pano-ai', seed: false, source: 'ashby' },
 ];
 
 export const INCLUDE_KEYWORDS: string[] = [
