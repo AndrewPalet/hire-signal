@@ -143,6 +143,8 @@ export const COMPANIES: Company[] = [
   { name: 'SeatGeek', id: 'seatgeek', seed: false, source: 'greenhouse' },
   { name: 'Strava', id: 'strava', seed: false, source: 'ashby' },
   { name: 'Discord', id: 'discord', seed: false, source: 'greenhouse' },
+  { name: 'Reddit', id: 'reddit', seed: false, source: 'greenhouse' },
+  { name: 'Zocdoc', id: 'zocdoc', seed: false, source: 'greenhouse' },
   { name: 'Andela', id: 'andela', seed: false, source: 'ashby' },
   { name: 'Calm', id: 'calm', seed: false, source: 'greenhouse' },
   { name: 'Cameo', id: 'cameo', seed: false, source: 'greenhouse' },
