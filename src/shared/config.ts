@@ -120,6 +120,10 @@ export const COMPANIES: Company[] = [
   { name: 'Regrello', id: 'regrello', seed: false, source: 'lever' },
   { name: 'Hightouch', id: 'hightouch', seed: false, source: 'greenhouse' },
   { name: 'WorkOS', id: 'workos', seed: false, source: 'ashby' },
+  { name: 'Orb', id: 'orb', seed: false, source: 'ashby' },
+  { name: 'Orum', id: 'orum', seed: false, source: 'ashby' },
+  { name: 'Runway', id: 'runway', seed: false, source: 'ashby' },
+  { name: 'BrightHire', id: 'brighthire', seed: false, source: 'greenhouse' },
 
   // Design / Productivity
   { name: 'Figma', id: 'figma', seed: true, source: 'greenhouse' },
@@ -145,6 +149,7 @@ export const COMPANIES: Company[] = [
   { name: 'Discord', id: 'discord', seed: false, source: 'greenhouse' },
   { name: 'Reddit', id: 'reddit', seed: false, source: 'greenhouse' },
   { name: 'Zocdoc', id: 'zocdoc', seed: false, source: 'greenhouse' },
+  { name: 'Whatnot', id: 'whatnot', seed: false, source: 'ashby' },
   { name: 'Andela', id: 'andela', seed: false, source: 'ashby' },
   { name: 'Calm', id: 'calm', seed: false, source: 'greenhouse' },
   { name: 'Cameo', id: 'cameo', seed: false, source: 'greenhouse' },
@@ -179,6 +184,7 @@ export const COMPANIES: Company[] = [
   { name: 'Metronome', id: 'metronome', seed: false, source: 'greenhouse' },
   { name: 'Lattice', id: 'lattice', seed: false, source: 'greenhouse' },
   { name: 'Kong', id: 'kong', seed: false, source: 'ashby' },
+  { name: 'Mosey', id: 'mosey', seed: false, source: 'ashby' },
   { name: 'Scale AI', id: 'scaleai', seed: false, source: 'greenhouse' },
   { name: 'Collibra', id: 'collibra', seed: false, source: 'greenhouse' },
   { name: 'Tailscale', id: 'tailscale', seed: false, source: 'greenhouse' },
@@ -226,6 +232,7 @@ export const COMPANIES: Company[] = [
   { name: 'Higharc', id: 'higharc', seed: false, source: 'ashby' },
   { name: 'Pano AI', id: 'pano-ai', seed: false, source: 'ashby' },
   { name: 'Solace', id: 'solace', seed: false, source: 'ashby' },
+  { name: 'Pomelo Care', id: 'pomelocare', seed: false, source: 'greenhouse' },
 ];
 
 export const INCLUDE_KEYWORDS: string[] = [
