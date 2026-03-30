@@ -27,6 +27,7 @@ export const COMPANIES: Company[] = [
   { name: 'Rain', id: 'rain', seed: false, source: 'ashby' },
   { name: 'Crypto.com', id: 'crypto', seed: false, source: 'lever' },
   { name: 'Offchain Labs', id: 'offchainlabs', seed: false, source: 'lever' },
+  { name: 'Mysten Labs', id: 'mystenlabs', seed: false, source: 'ashby' },
 
   // Payments / Banking
   { name: 'Stripe', id: 'stripe', seed: false, source: 'greenhouse' },
@@ -62,6 +63,7 @@ export const COMPANIES: Company[] = [
   { name: 'Kiavi', id: 'kiavi', seed: false, source: 'greenhouse' },
   { name: 'Tastytrade', id: 'tastytrade', seed: false, source: 'greenhouse' },
   { name: 'Zest AI', id: 'zestai', seed: false, source: 'greenhouse' },
+  { name: 'Nova Credit', id: 'novacredit', seed: false, source: 'greenhouse' },
 
   // Real Estate / PropTech
   { name: 'Baselane', id: 'baselane', seed: false, source: 'lever' },
@@ -124,6 +126,7 @@ export const COMPANIES: Company[] = [
   { name: 'Orum', id: 'orum', seed: false, source: 'ashby' },
   { name: 'Runway', id: 'runway', seed: false, source: 'ashby' },
   { name: 'BrightHire', id: 'brighthire', seed: false, source: 'greenhouse' },
+  { name: 'Siro', id: 'siro', seed: false, source: 'ashby' },
 
   // Design / Productivity
   { name: 'Figma', id: 'figma', seed: true, source: 'greenhouse' },
@@ -150,6 +153,7 @@ export const COMPANIES: Company[] = [
   { name: 'Reddit', id: 'reddit', seed: false, source: 'greenhouse' },
   { name: 'Zocdoc', id: 'zocdoc', seed: false, source: 'greenhouse' },
   { name: 'Whatnot', id: 'whatnot', seed: false, source: 'ashby' },
+  { name: 'Vetcove', id: 'vetcove', seed: false, source: 'ashby' },
   { name: 'Andela', id: 'andela', seed: false, source: 'ashby' },
   { name: 'Calm', id: 'calm', seed: false, source: 'greenhouse' },
   { name: 'Cameo', id: 'cameo', seed: false, source: 'greenhouse' },
@@ -211,6 +215,8 @@ export const COMPANIES: Company[] = [
   { name: 'Synack', id: 'synack', seed: false, source: 'greenhouse' },
   { name: 'Sysdig', id: 'sysdig', seed: false, source: 'lever' },
   { name: 'Vectra', id: 'vectranetworks', seed: false, source: 'greenhouse' },
+  { name: 'Panther', id: 'pantherlabs', seed: false, source: 'greenhouse' },
+  { name: 'SpruceID', id: 'sprucesystems', seed: false, source: 'lever' },
 
   // Other
   { name: 'tvScientific', id: 'tvscientificpoweredbypinterest', seed: true, source: 'greenhouse' },
@@ -233,6 +239,8 @@ export const COMPANIES: Company[] = [
   { name: 'Pano AI', id: 'pano-ai', seed: false, source: 'ashby' },
   { name: 'Solace', id: 'solace', seed: false, source: 'ashby' },
   { name: 'Pomelo Care', id: 'pomelocare', seed: false, source: 'greenhouse' },
+  { name: 'Onebrief', id: 'onebrief', seed: false, source: 'ashby' },
+  { name: 'Mode Mobile', id: 'modemobile', seed: false, source: 'greenhouse' },
 ];
 
 export const INCLUDE_KEYWORDS: string[] = [
