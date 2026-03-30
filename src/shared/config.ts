@@ -217,6 +217,7 @@ export const COMPANIES: Company[] = [
   { name: 'Vectra', id: 'vectranetworks', seed: false, source: 'greenhouse' },
   { name: 'Panther', id: 'pantherlabs', seed: false, source: 'greenhouse' },
   { name: 'SpruceID', id: 'sprucesystems', seed: false, source: 'lever' },
+  { name: 'CLEAR', id: 'clear', seed: false, source: 'greenhouse' },
 
   // Other
   { name: 'tvScientific', id: 'tvscientificpoweredbypinterest', seed: true, source: 'greenhouse' },
