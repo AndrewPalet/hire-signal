@@ -46,6 +46,13 @@ Many jobs can be **quick-scored from title + location alone** when dealbreakers 
 - **Senior Staff / Principal titles** → role_fit=2-3 (well beyond candidate seniority)
 - **ML/AI research, security, Salesforce, native-only mobile** → role_fit=2-3
 
+**⚠️ AMBIGUOUS LOCATIONS:** Do NOT auto-dealbreak locations that are ambiguous. Instead, **automatically fetch the job description or posting URL** to determine the actual location policy before scoring. Ambiguous locations include:
+- "Remote" (without a country), "Remote - Global", "Global"
+- "Georgia" (could be US state or country)
+- Any location that could plausibly include US-remote candidates
+
+Only auto-dealbreak locations that are **unambiguously** non-US (e.g., "Bengaluru", "Dublin, Ireland", "Shanghai") or unambiguously on-site in a specific non-Dallas US city (e.g., "San Francisco, CA", "New York, NY").
+
 For jobs that COULD score well (frontend, fullstack, growth, product eng, remote US), fetch their descriptions:
 ```sql
 SELECT substr(description, 1, 3000) FROM jobs WHERE id = '{id}';
