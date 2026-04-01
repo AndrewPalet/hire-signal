@@ -68,6 +68,7 @@ async function main() {
     if (error || !result) {
       errors++;
       console.log(`  [${i + 1}] ${job.company_name} — ${job.title}`);
+      console.log(`      ${job.url}`);
       console.log(`      ✗ ERROR: ${error}`);
       console.log('');
       continue;
@@ -78,6 +79,7 @@ async function main() {
     if (result.dealbreaker) dealbreakers++;
 
     console.log(`  [${i + 1}] ${job.company_name} — ${job.title}`);
+    console.log(`      ${job.url}`);
     console.log(
       `      Fit: ${result.role_fit_score}  |  Location: ${result.location_score}  |  Stack: ${result.stack_score}  |  Comp: ${result.comp_score}  |  Overall: ${result.overall_score}`,
     );
