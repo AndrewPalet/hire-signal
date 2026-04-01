@@ -86,38 +86,117 @@ See [`src/shared/config.ts`](src/shared/config.ts) for the full list.
 
 **Keyword filtering:** Job titles are matched against include keywords (e.g. `software engineer`, `frontend`, `react`, `typescript`) and exclude keywords (e.g. `manager`, `data scientist`, `intern`). Exclude takes priority.
 
-## Setup
-
-```bash
-# Install dependencies
-yarn install
-
-# Run the monitor (seeds on first run)
-yarn monitor
-
-# Score unscored jobs
-yarn score
-
-# Send Discord notifications for 7+ scored jobs
-yarn notify
-
-# Run the full pipeline (monitor → score → notify)
-yarn run-all
-```
+## Getting Started
 
 ### Prerequisites
 
-- Node.js 24+ (managed via [Volta](https://volta.sh))
-- Yarn 1.x
+- [Node.js 24+](https://nodejs.org/) (managed via [Volta](https://volta.sh))
+- [Yarn 1.x](https://classic.yarnpkg.com/)
 
-### Environment Variables
+### 1. Fork, clone, and install
 
-See [`.env.example`](.env.example) for all required variables:
+```bash
+git clone https://github.com/YOUR_USERNAME/hire-signal.git
+cd hire-signal
+yarn install
+```
 
-- `ANTHROPIC_API_KEY` — Claude API key for scoring
-- `DISCORD_BOT_TOKEN` / `DISCORD_CHANNEL_ID` — Bot credentials for notifications
-- `DISCORD_ERROR_WEBHOOK_URL` — Webhook for pipeline error alerts
-- `DB_BACKEND` / `TURSO_DATABASE_URL` / `TURSO_AUTH_TOKEN` — Database config
+### 2. Customize your scoring profile
+
+Edit [`profile/scoring-brief.md`](profile/scoring-brief.md) with your own details:
+
+- Role target (title, seniority, location preference)
+- Target comp range
+- Tech stack (strongest to familiar)
+- Experience and domains
+- Preferences and anti-patterns
+
+The AI scorer uses this file as context when evaluating every job. Be specific — the more detail you provide, the more accurate scoring will be.
+
+### 3. Customize your companies and keywords
+
+Edit [`src/shared/config.ts`](src/shared/config.ts):
+
+- **`COMPANIES`** — replace with your target companies (see [Adding a New Company](#adding-a-new-company))
+- **`INCLUDE_KEYWORDS`** — title keywords to match (e.g., `software engineer`, `frontend`)
+- **`EXCLUDE_KEYWORDS`** — title keywords to filter out (e.g., `manager`, `intern`)
+
+### 4. Set up external services (all free tier)
+
+**Anthropic (required for scoring):**
+- Sign up at [console.anthropic.com](https://console.anthropic.com)
+- Create an API key → `ANTHROPIC_API_KEY`
+
+**Discord Bot (required for notifications):**
+1. Create an app at [discord.com/developers/applications](https://discord.com/developers/applications)
+2. Create a Bot, copy the token → `DISCORD_BOT_TOKEN`
+3. Note the Application ID → `DISCORD_APP_ID` and Public Key → `DISCORD_PUBLIC_KEY`
+4. Invite the bot to your server: `https://discord.com/api/oauth2/authorize?client_id={APP_ID}&permissions=83968&scope=bot`
+5. Copy the channel ID for notifications → `DISCORD_CHANNEL_ID`
+
+**Discord Webhook (required for error alerts):**
+- In your Discord server, create a webhook in a `#pipeline-errors` channel → `DISCORD_ERROR_WEBHOOK_URL`
+
+**Turso (required for cloud/CI deployment):**
+1. Sign up at [turso.tech](https://turso.tech)
+2. Create a database: `turso db create job-monitor`
+3. Get the URL: `turso db show job-monitor --url` → `TURSO_DATABASE_URL`
+4. Create a token: `turso db tokens create job-monitor` → `TURSO_AUTH_TOKEN`
+
+### 5. Configure environment
+
+```bash
+cp .env.example .env
+# Fill in your credentials
+```
+
+For local development, set `DB_BACKEND=local` (uses SQLite, no Turso needed).
+
+### 6. Run locally
+
+```bash
+# Run the full pipeline
+yarn monitor    # Ingest jobs from all company boards
+yarn score      # Score unscored jobs with Claude AI
+yarn notify     # Send Discord notifications for jobs scoring 7+
+
+# Or run all three in sequence
+yarn run-all
+```
+
+### 7. Deploy to GitHub Actions
+
+Add these secrets to your repo (Settings → Secrets → Actions):
+
+| Secret | Description |
+|--------|-------------|
+| `ANTHROPIC_API_KEY` | Claude API key |
+| `DISCORD_BOT_TOKEN` | Discord bot token |
+| `DISCORD_CHANNEL_ID` | Discord channel for notifications |
+| `DISCORD_WEBHOOK_URL` | Discord webhook (legacy, kept for compatibility) |
+| `DISCORD_ERROR_WEBHOOK_URL` | Discord webhook for error alerts |
+| `TURSO_DATABASE_URL` | Turso database URL |
+| `TURSO_AUTH_TOKEN` | Turso auth token |
+| `SCORING_BRIEF_B64` | Base64-encoded scoring brief (`cat profile/scoring-brief.md \| base64`) |
+
+Push to `main` — the pipeline runs automatically on the cron schedule or via manual dispatch.
+
+### 8. Deploy Cloudflare Worker (optional — enables "Seen" buttons)
+
+```bash
+cd worker
+yarn install
+npx wrangler login
+npx wrangler secret put DISCORD_PUBLIC_KEY
+npx wrangler secret put DISCORD_BOT_TOKEN
+npx wrangler secret put TURSO_DATABASE_URL
+npx wrangler secret put TURSO_AUTH_TOKEN
+npx wrangler deploy
+```
+
+Copy the deployed URL and set it as the **Interactions Endpoint URL** in Discord Developer Portal → General Information.
+
+Without the worker, notifications still work — you just won't have interactive "Seen" buttons.
 
 ## Development
 
