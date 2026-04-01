@@ -9,6 +9,7 @@ export interface Company {
 
 export const COMPANIES: Company[] = [
   // Crypto / Web3
+  { name: 'Gemini', id: 'gemini', seed: false, source: 'greenhouse' },
   { name: 'Coinbase', id: 'coinbase', seed: false, source: 'greenhouse' },
   { name: 'CoinTracker', id: 'cointracker', seed: false, source: 'ashby' },
   { name: 'MetaMask', id: 'consensys', seed: true, source: 'greenhouse' },
