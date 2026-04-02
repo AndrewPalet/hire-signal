@@ -65,6 +65,8 @@ export const COMPANIES: Company[] = [
   { name: 'Tastytrade', id: 'tastytrade', seed: false, source: 'greenhouse' },
   { name: 'Zest AI', id: 'zestai', seed: false, source: 'greenhouse' },
   { name: 'Nova Credit', id: 'novacredit', seed: false, source: 'greenhouse' },
+  { name: 'MeridianLink', id: 'meridianlink', seed: false, source: 'ashby' },
+  { name: 'Finalis', id: 'finalis', seed: false, source: 'ashby' },
 
   // Real Estate / PropTech
   { name: 'Baselane', id: 'baselane', seed: false, source: 'lever' },
@@ -127,6 +129,9 @@ export const COMPANIES: Company[] = [
   { name: 'Orum', id: 'orum', seed: false, source: 'ashby' },
   { name: 'Runway', id: 'runway', seed: false, source: 'ashby' },
   { name: 'BrightHire', id: 'brighthire', seed: false, source: 'greenhouse' },
+  { name: 'Jellyfish', id: 'jellyfish', seed: false, source: 'ashby' },
+  { name: 'ZenBusiness', id: 'zenbusiness', seed: false, source: 'greenhouse' },
+  { name: 'B12', id: 'b12', seed: false, source: 'greenhouse' },
   { name: 'Siro', id: 'siro', seed: false, source: 'ashby' },
 
   // Design / Productivity
@@ -219,6 +224,7 @@ export const COMPANIES: Company[] = [
   { name: 'Panther', id: 'pantherlabs', seed: false, source: 'greenhouse' },
   { name: 'SpruceID', id: 'sprucesystems', seed: false, source: 'lever' },
   { name: 'CLEAR', id: 'clear', seed: false, source: 'greenhouse' },
+  { name: 'Mozilla', id: 'mozilla', seed: false, source: 'greenhouse' },
 
   // Other
   { name: 'tvScientific', id: 'tvscientificpoweredbypinterest', seed: true, source: 'greenhouse' },
@@ -241,6 +247,8 @@ export const COMPANIES: Company[] = [
   { name: 'Pano AI', id: 'pano-ai', seed: false, source: 'ashby' },
   { name: 'Solace', id: 'solace', seed: false, source: 'ashby' },
   { name: 'Pomelo Care', id: 'pomelocare', seed: false, source: 'greenhouse' },
+  { name: 'Medrio', id: 'medrio', seed: false, source: 'greenhouse' },
+  { name: 'Care Access', id: 'careaccess', seed: false, source: 'greenhouse' },
   { name: 'Onebrief', id: 'onebrief', seed: false, source: 'ashby' },
   { name: 'Mode Mobile', id: 'modemobile', seed: false, source: 'greenhouse' },
 ];
