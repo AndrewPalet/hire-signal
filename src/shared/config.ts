@@ -85,6 +85,7 @@ export const COMPANIES: Company[] = [
 
   // SaaS / B2B
   { name: 'Gong', id: 'gongio', seed: false, source: 'greenhouse' },
+  { name: 'Mixpanel', id: 'mixpanel', seed: false, source: 'greenhouse' },
   { name: 'Pendo', id: 'pendo', seed: false, source: 'greenhouse' },
   { name: 'LaunchDarkly', id: 'launchdarkly', seed: false, source: 'greenhouse' },
   { name: 'Contentful', id: 'contentful', seed: false, source: 'greenhouse' },
