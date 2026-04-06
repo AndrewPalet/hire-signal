@@ -1594,5 +1594,1531 @@
     "seed": false,
     "source": "ashby",
     "sector": "other"
+  },
+  {
+    "name": "Anthropic",
+    "id": "anthropic",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "ai"
+  },
+  {
+    "name": "OpenAI",
+    "id": "openai",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Perplexity",
+    "id": "perplexity",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Replit",
+    "id": "replit",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Cursor",
+    "id": "cursor",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Harvey",
+    "id": "harvey",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Sierra",
+    "id": "sierra",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Decagon",
+    "id": "decagon",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Character.ai",
+    "id": "character",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "HeyGen",
+    "id": "heygen",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Together AI",
+    "id": "togetherai",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "ai"
+  },
+  {
+    "name": "Lightning AI",
+    "id": "lightningai",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "ai"
+  },
+  {
+    "name": "Twelve Labs",
+    "id": "twelve-labs",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Suno",
+    "id": "suno",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Pika",
+    "id": "pika",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Typeface",
+    "id": "typeface",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Hebbia",
+    "id": "hebbia",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Cartesia",
+    "id": "cartesia",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Baseten",
+    "id": "baseten",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "LangChain",
+    "id": "langchain",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Retell AI",
+    "id": "retell-ai",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Credal",
+    "id": "credal",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Mercor",
+    "id": "mercor",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Speechify",
+    "id": "speechify",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Rad AI",
+    "id": "radai",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Glean",
+    "id": "gleanwork",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "ai"
+  },
+  {
+    "name": "Otter.ai",
+    "id": "otterai",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "ai"
+  },
+  {
+    "name": "Read AI",
+    "id": "read-ai",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "EliseAI",
+    "id": "eliseai",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Cresta",
+    "id": "cresta",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "ai"
+  },
+  {
+    "name": "C3.ai",
+    "id": "c3iot",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "ai"
+  },
+  {
+    "name": "Hive",
+    "id": "hive",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Nooks",
+    "id": "nooks",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Altana AI",
+    "id": "altanaai",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "ai"
+  },
+  {
+    "name": "Mirage",
+    "id": "mirage",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "FleetWorks",
+    "id": "fleetworks",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Vizcom",
+    "id": "vizcom",
+    "seed": false,
+    "source": "ashby",
+    "sector": "ai"
+  },
+  {
+    "name": "Databricks",
+    "id": "databricks",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "Snowflake",
+    "id": "snowflake",
+    "seed": false,
+    "source": "ashby",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "Datadog",
+    "id": "datadog",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "MongoDB",
+    "id": "mongodb",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "ClickHouse",
+    "id": "clickhouse",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "Vercel",
+    "id": "vercel",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "Elastic",
+    "id": "elastic",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "CoreWeave",
+    "id": "coreweave",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "Temporal",
+    "id": "temporaltechnologies",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "Cribl",
+    "id": "cribl",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "Docker",
+    "id": "docker",
+    "seed": false,
+    "source": "ashby",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "New Relic",
+    "id": "newrelic",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "Fastly",
+    "id": "fastly",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "Chainguard",
+    "id": "chainguard",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "Sumo Logic",
+    "id": "sumologic",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "DigitalOcean",
+    "id": "digitalocean98",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "Teleport",
+    "id": "goteleport",
+    "seed": false,
+    "source": "ashby",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "dbt Labs",
+    "id": "dbtlabsinc",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "Nebius",
+    "id": "nebius",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "Crusoe",
+    "id": "crusoe",
+    "seed": false,
+    "source": "ashby",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "Illumio",
+    "id": "illumio",
+    "seed": false,
+    "source": "ashby",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "HackerOne",
+    "id": "hackerone",
+    "seed": false,
+    "source": "ashby",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "LiveKit",
+    "id": "livekit",
+    "seed": false,
+    "source": "ashby",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "Semgrep",
+    "id": "semgrep",
+    "seed": false,
+    "source": "ashby",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "Persona",
+    "id": "persona",
+    "seed": false,
+    "source": "ashby",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "StackBlitz",
+    "id": "stackblitz",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "Keeper Security",
+    "id": "keepersecurity",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "Dragos",
+    "id": "dragos",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "Bugcrowd",
+    "id": "bugcrowd",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "SonarSource",
+    "id": "sonarsource",
+    "seed": false,
+    "source": "lever",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "Tines",
+    "id": "tines",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "Sift",
+    "id": "siftstack",
+    "seed": false,
+    "source": "ashby",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "ngrok",
+    "id": "ngrokinc",
+    "seed": false,
+    "source": "ashby",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "Ditto",
+    "id": "ditto",
+    "seed": false,
+    "source": "ashby",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "Hex",
+    "id": "hextechnologies",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "infrastructure"
+  },
+  {
+    "name": "DoorDash",
+    "id": "doordashusa",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-marketplace"
+  },
+  {
+    "name": "Instacart",
+    "id": "instacart",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-marketplace"
+  },
+  {
+    "name": "Pinterest",
+    "id": "pinterest",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-marketplace"
+  },
+  {
+    "name": "Lyft",
+    "id": "lyft",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-marketplace"
+  },
+  {
+    "name": "Roblox",
+    "id": "roblox",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-marketplace"
+  },
+  {
+    "name": "Twitch",
+    "id": "twitch",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-marketplace"
+  },
+  {
+    "name": "Crunchyroll",
+    "id": "crunchyroll",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-marketplace"
+  },
+  {
+    "name": "Poshmark",
+    "id": "poshmark",
+    "seed": false,
+    "source": "ashby",
+    "sector": "consumer-marketplace"
+  },
+  {
+    "name": "Patreon",
+    "id": "patreon",
+    "seed": false,
+    "source": "ashby",
+    "sector": "consumer-marketplace"
+  },
+  {
+    "name": "GoFundMe",
+    "id": "gofundme",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-marketplace"
+  },
+  {
+    "name": "GlossGenius",
+    "id": "glossgenius",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-marketplace"
+  },
+  {
+    "name": "The Knot Worldwide",
+    "id": "theknotworldwide",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-marketplace"
+  },
+  {
+    "name": "Hopper",
+    "id": "hopper",
+    "seed": false,
+    "source": "ashby",
+    "sector": "consumer-marketplace"
+  },
+  {
+    "name": "Instawork",
+    "id": "instawork",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-marketplace"
+  },
+  {
+    "name": "Tubi",
+    "id": "tubitv",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-marketplace"
+  },
+  {
+    "name": "Quizlet",
+    "id": "quizlet-2",
+    "seed": false,
+    "source": "lever",
+    "sector": "consumer-marketplace"
+  },
+  {
+    "name": "Match Group",
+    "id": "matchgroup",
+    "seed": false,
+    "source": "lever",
+    "sector": "consumer-marketplace"
+  },
+  {
+    "name": "CookUnity",
+    "id": "cookunity",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-marketplace"
+  },
+  {
+    "name": "Partiful",
+    "id": "partiful",
+    "seed": false,
+    "source": "ashby",
+    "sector": "consumer-marketplace"
+  },
+  {
+    "name": "ZipRecruiter",
+    "id": "ziprecruiter",
+    "seed": false,
+    "source": "ashby",
+    "sector": "consumer-marketplace"
+  },
+  {
+    "name": "WorkWhile",
+    "id": "workwhilejobs",
+    "seed": false,
+    "source": "ashby",
+    "sector": "consumer-marketplace"
+  },
+  {
+    "name": "EzCater",
+    "id": "ezcaterinc",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-marketplace"
+  },
+  {
+    "name": "Otter (DoorDash)",
+    "id": "otter",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-marketplace"
+  },
+  {
+    "name": "Dropbox",
+    "id": "dropbox",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "design-productivity"
+  },
+  {
+    "name": "ClickUp",
+    "id": "clickup",
+    "seed": false,
+    "source": "ashby",
+    "sector": "design-productivity"
+  },
+  {
+    "name": "Airtable",
+    "id": "airtable",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "design-productivity"
+  },
+  {
+    "name": "Smartsheet",
+    "id": "smartsheet",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "design-productivity"
+  },
+  {
+    "name": "Bubble",
+    "id": "bubble",
+    "seed": false,
+    "source": "ashby",
+    "sector": "design-productivity"
+  },
+  {
+    "name": "Mural",
+    "id": "mural",
+    "seed": false,
+    "source": "ashby",
+    "sector": "design-productivity"
+  },
+  {
+    "name": "Klaviyo",
+    "id": "klaviyo",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "HubSpot",
+    "id": "hubspotjobs",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "Okta",
+    "id": "okta",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "ZoomInfo",
+    "id": "zoominfo",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "The Trade Desk",
+    "id": "thetradedesk",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "Sigma Computing",
+    "id": "sigmacomputing",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "Dialpad",
+    "id": "dialpad",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "Samsara",
+    "id": "samsara",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "Abnormal Security",
+    "id": "abnormalsecurity",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "6sense",
+    "id": "6sense",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "AlphaSense",
+    "id": "alphasense",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "Anaplan",
+    "id": "anaplan",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "Diligent",
+    "id": "diligentcorporation",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "Front",
+    "id": "frontcareers",
+    "seed": false,
+    "source": "ashby",
+    "sector": "saas"
+  },
+  {
+    "name": "Customer.io",
+    "id": "customerio",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "PandaDoc",
+    "id": "pandadoc",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "Cision",
+    "id": "cision",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "SurveyMonkey",
+    "id": "surveymonkey",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "Kaseya",
+    "id": "kaseya",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "Zuora",
+    "id": "zuora",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "Zeta Global",
+    "id": "zetaglobal",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "DoubleVerify",
+    "id": "doubleverify",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "Machinify",
+    "id": "machinifyinc",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "Moloco",
+    "id": "moloco",
+    "seed": false,
+    "source": "ashby",
+    "sector": "saas"
+  },
+  {
+    "name": "Ashby",
+    "id": "ashby",
+    "seed": false,
+    "source": "ashby",
+    "sector": "saas"
+  },
+  {
+    "name": "Later",
+    "id": "later",
+    "seed": false,
+    "source": "ashby",
+    "sector": "saas"
+  },
+  {
+    "name": "FloQast",
+    "id": "floqast",
+    "seed": false,
+    "source": "ashby",
+    "sector": "saas"
+  },
+  {
+    "name": "Assembled",
+    "id": "assembledhq",
+    "seed": false,
+    "source": "ashby",
+    "sector": "saas"
+  },
+  {
+    "name": "Clay",
+    "id": "claylabs",
+    "seed": false,
+    "source": "ashby",
+    "sector": "saas"
+  },
+  {
+    "name": "Ironclad",
+    "id": "ironcladhq",
+    "seed": false,
+    "source": "ashby",
+    "sector": "saas"
+  },
+  {
+    "name": "Scribe",
+    "id": "scribe",
+    "seed": false,
+    "source": "ashby",
+    "sector": "saas"
+  },
+  {
+    "name": "Pylon",
+    "id": "pylon-labs",
+    "seed": false,
+    "source": "ashby",
+    "sector": "saas"
+  },
+  {
+    "name": "BuildOps",
+    "id": "buildops",
+    "seed": false,
+    "source": "ashby",
+    "sector": "saas"
+  },
+  {
+    "name": "Maybern",
+    "id": "maybern",
+    "seed": false,
+    "source": "ashby",
+    "sector": "saas"
+  },
+  {
+    "name": "GovWell",
+    "id": "govwell",
+    "seed": false,
+    "source": "ashby",
+    "sector": "saas"
+  },
+  {
+    "name": "Disco",
+    "id": "disco",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "Coupa",
+    "id": "coupa",
+    "seed": false,
+    "source": "lever",
+    "sector": "saas"
+  },
+  {
+    "name": "Palantir",
+    "id": "palantir",
+    "seed": false,
+    "source": "lever",
+    "sector": "saas"
+  },
+  {
+    "name": "StackAdapt",
+    "id": "stackadapt",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "Aircall",
+    "id": "aircall",
+    "seed": false,
+    "source": "lever",
+    "sector": "saas"
+  },
+  {
+    "name": "Navi (TripActions)",
+    "id": "tripactions",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "Workato",
+    "id": "workato",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "Appian",
+    "id": "appian",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "Five9",
+    "id": "five9",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "Lightspeed Commerce",
+    "id": "lightspeedhq",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "Veeva",
+    "id": "veeva",
+    "seed": false,
+    "source": "lever",
+    "sector": "saas"
+  },
+  {
+    "name": "Mark43",
+    "id": "mark43",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "Fundraise Up",
+    "id": "fundraiseup",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "Cloudbeds",
+    "id": "cloudbedsthirdpartyboard",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "saas"
+  },
+  {
+    "name": "Zip",
+    "id": "zip",
+    "seed": false,
+    "source": "ashby",
+    "sector": "saas"
+  },
+  {
+    "name": "SoFi",
+    "id": "sofi",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-finance"
+  },
+  {
+    "name": "Nubank",
+    "id": "nubank",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-finance"
+  },
+  {
+    "name": "Upstart",
+    "id": "upstart",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-finance"
+  },
+  {
+    "name": "Alpaca",
+    "id": "alpaca",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-finance"
+  },
+  {
+    "name": "AngelList",
+    "id": "angellist",
+    "seed": false,
+    "source": "lever",
+    "sector": "consumer-finance"
+  },
+  {
+    "name": "Ridgeline",
+    "id": "ridgeline",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-finance"
+  },
+  {
+    "name": "Clear Street",
+    "id": "clearstreet",
+    "seed": false,
+    "source": "ashby",
+    "sector": "consumer-finance"
+  },
+  {
+    "name": "Sezzle",
+    "id": "sezzle",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-finance"
+  },
+  {
+    "name": "Addepar",
+    "id": "addepar1",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-finance"
+  },
+  {
+    "name": "Schonfeld",
+    "id": "schonfeld",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-finance"
+  },
+  {
+    "name": "Interactive Brokers",
+    "id": "ibkr",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-finance"
+  },
+  {
+    "name": "GoodLeap",
+    "id": "goodleap",
+    "seed": false,
+    "source": "ashby",
+    "sector": "consumer-finance"
+  },
+  {
+    "name": "Imprint",
+    "id": "imprint",
+    "seed": false,
+    "source": "ashby",
+    "sector": "consumer-finance"
+  },
+  {
+    "name": "Bill.com",
+    "id": "billcom",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "payments"
+  },
+  {
+    "name": "Adyen",
+    "id": "adyen",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "payments"
+  },
+  {
+    "name": "Airwallex",
+    "id": "airwallex",
+    "seed": false,
+    "source": "ashby",
+    "sector": "payments"
+  },
+  {
+    "name": "Parafin",
+    "id": "parafin",
+    "seed": false,
+    "source": "ashby",
+    "sector": "payments"
+  },
+  {
+    "name": "Check",
+    "id": "check",
+    "seed": false,
+    "source": "ashby",
+    "sector": "payments"
+  },
+  {
+    "name": "AffiniPay",
+    "id": "affinipay1",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "payments"
+  },
+  {
+    "name": "Ripple",
+    "id": "ripple",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "crypto"
+  },
+  {
+    "name": "Paxos",
+    "id": "paxos",
+    "seed": false,
+    "source": "ashby",
+    "sector": "crypto"
+  },
+  {
+    "name": "Compass",
+    "id": "urbancompass",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "real-estate"
+  },
+  {
+    "name": "Opendoor",
+    "id": "opendoor",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "real-estate"
+  },
+  {
+    "name": "Luxury Presence",
+    "id": "luxurypresence",
+    "seed": false,
+    "source": "lever",
+    "sector": "real-estate"
+  },
+  {
+    "name": "Realtor.com",
+    "id": "rdccareers",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "real-estate"
+  },
+  {
+    "name": "Genius Sports",
+    "id": "geniussports",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "predictions"
+  },
+  {
+    "name": "Dandy",
+    "id": "dandy",
+    "seed": false,
+    "source": "ashby",
+    "sector": "health-tech"
+  },
+  {
+    "name": "Spring Health",
+    "id": "springhealth66",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "health-tech"
+  },
+  {
+    "name": "Grow Therapy",
+    "id": "growtherapy",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "health-tech"
+  },
+  {
+    "name": "Midi Health",
+    "id": "midihealth",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "health-tech"
+  },
+  {
+    "name": "Oscar Health",
+    "id": "oscar",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "health-tech"
+  },
+  {
+    "name": "Tebra",
+    "id": "tebra",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "health-tech"
+  },
+  {
+    "name": "SmithRx",
+    "id": "smithrx",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "health-tech"
+  },
+  {
+    "name": "Natera",
+    "id": "natera",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "health-tech"
+  },
+  {
+    "name": "Garner Health",
+    "id": "garnerhealth",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "health-tech"
+  },
+  {
+    "name": "Suki",
+    "id": "suki",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "health-tech"
+  },
+  {
+    "name": "Cleerly",
+    "id": "cleerlyhealth",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "health-tech"
+  },
+  {
+    "name": "Ro",
+    "id": "ro",
+    "seed": false,
+    "source": "lever",
+    "sector": "health-tech"
+  },
+  {
+    "name": "Aledade",
+    "id": "aledade",
+    "seed": false,
+    "source": "ashby",
+    "sector": "health-tech"
+  },
+  {
+    "name": "Maven Clinic",
+    "id": "mavenclinic",
+    "seed": false,
+    "source": "ashby",
+    "sector": "health-tech"
+  },
+  {
+    "name": "Charlie Health",
+    "id": "charliehealth",
+    "seed": false,
+    "source": "ashby",
+    "sector": "health-tech"
+  },
+  {
+    "name": "Candid Health",
+    "id": "candidhealth",
+    "seed": false,
+    "source": "ashby",
+    "sector": "health-tech"
+  },
+  {
+    "name": "Commure",
+    "id": "commure",
+    "seed": false,
+    "source": "ashby",
+    "sector": "health-tech"
+  },
+  {
+    "name": "NexHealth",
+    "id": "nexhealth",
+    "seed": false,
+    "source": "ashby",
+    "sector": "health-tech"
+  },
+  {
+    "name": "Clipboard Health",
+    "id": "clipboard",
+    "seed": false,
+    "source": "ashby",
+    "sector": "health-tech"
+  },
+  {
+    "name": "Maximus",
+    "id": "maximustribe",
+    "seed": false,
+    "source": "ashby",
+    "sector": "health-tech"
+  },
+  {
+    "name": "Tennr",
+    "id": "tennr",
+    "seed": false,
+    "source": "ashby",
+    "sector": "health-tech"
+  },
+  {
+    "name": "Abridge",
+    "id": "abridge",
+    "seed": false,
+    "source": "ashby",
+    "sector": "health-tech"
+  },
+  {
+    "name": "The New York Times",
+    "id": "thenewyorktimes",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "other"
+  },
+  {
+    "name": "Roku",
+    "id": "roku",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "other"
+  },
+  {
+    "name": "Unity",
+    "id": "unity3d",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "other"
+  },
+  {
+    "name": "Riot Games",
+    "id": "riotgames",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "other"
+  },
+  {
+    "name": "Sony Interactive Entertainment",
+    "id": "sonyinteractiveentertainmentglobal",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "other"
+  },
+  {
+    "name": "2K Games",
+    "id": "2k",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "other"
+  },
+  {
+    "name": "Rockstar Games",
+    "id": "rockstargames",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "other"
+  },
+  {
+    "name": "Xometry",
+    "id": "xometry",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "other"
+  },
+  {
+    "name": "Planet Labs",
+    "id": "planetlabs",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "other"
+  },
+  {
+    "name": "ActBlue",
+    "id": "actblue",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "other"
+  },
+  {
+    "name": "Afresh",
+    "id": "afresh",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "other"
+  },
+  {
+    "name": "EnergyHub",
+    "id": "energyhub",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "other"
+  },
+  {
+    "name": "Wikimedia",
+    "id": "wikimedia",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "other"
+  },
+  {
+    "name": "Metropolis",
+    "id": "metropolis",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "other"
+  },
+  {
+    "name": "TruckSmarter",
+    "id": "trucksmarter",
+    "seed": false,
+    "source": "ashby",
+    "sector": "other"
+  },
+  {
+    "name": "Dotmatics",
+    "id": "dotmatics",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "other"
+  },
+  {
+    "name": "Hadrian",
+    "id": "hadrian-automation",
+    "seed": false,
+    "source": "ashby",
+    "sector": "other"
+  },
+  {
+    "name": "Pallet",
+    "id": "pallet",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "ai"
+  },
+  {
+    "name": "HelloFresh",
+    "id": "hellofresh",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "consumer-marketplace"
   }
 ]
