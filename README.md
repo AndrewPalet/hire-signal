@@ -29,9 +29,9 @@ GitHub Actions (cron schedule + manual dispatch)
 
 | Step | Description |
 |------|-------------|
-| **Monitor** | Poll Greenhouse/Ashby/Lever APIs, keyword filter, store new jobs in SQLite/Turso |
+| **Monitor** | Poll Greenhouse/Ashby/Lever APIs, keyword filter, staleness filter (skip jobs >14 days old), prune stale data, store new jobs in SQLite/Turso |
 | **Score** | Score unscored jobs via Claude API on role fit, location, stack, and comp |
-| **Notify** | Send Discord embeds with interactive "Seen" buttons for jobs scoring 7+ |
+| **Notify** | Send Discord embeds with age badges and interactive "Seen" buttons for jobs scoring 7+ |
 | **Alert** | Post to `#pipeline-errors` via webhook if any step fails (used by CI) |
 
 ### Schedule
@@ -52,11 +52,11 @@ Error alerts use a separate **webhook** to `#pipeline-errors` — no bot or inte
 
 ## Monitored Companies
 
-197 companies across three ATS platforms:
+228 companies across three ATS platforms:
 
-- **Greenhouse (125):** Stripe, Coinbase, Airbnb, Figma, Discord, Robinhood, Duolingo, GitLab, Anduril, Scale AI, and [115 more](src/shared/config.ts)
-- **Ashby (51):** Notion, Ramp, Linear, Plaid, 1Password, Zapier, Vanta, WorkOS, Sentry, Redis, and [41 more](src/shared/config.ts)
-- **Lever (21):** Metabase, Crypto.com, Wealthfront, WHOOP, Outreach, and [16 more](src/shared/config.ts)
+- **Greenhouse (141):** Stripe, Coinbase, Airbnb, Figma, Discord, Robinhood, Duolingo, GitLab, Anduril, Scale AI, and [131 more](src/shared/config.ts)
+- **Ashby (64):** Notion, Ramp, Linear, Plaid, 1Password, Zapier, Vanta, WorkOS, Sentry, Redis, and [54 more](src/shared/config.ts)
+- **Lever (23):** Metabase, Crypto.com, Wealthfront, WHOOP, Outreach, and [18 more](src/shared/config.ts)
 
 See [`src/shared/config.ts`](src/shared/config.ts) for the full list.
 
@@ -85,6 +85,10 @@ See [`src/shared/config.ts`](src/shared/config.ts) for the full list.
 **Seed vs. evaluate:** Companies marked `seed: true` get their existing catalog silently ingested on first run (`is_seed = 1`) — those jobs are never scored or notified. Use this for companies you already watch. Companies with `seed: false` get all matching jobs scored on first run. Either way, after the first run the system is self-managing: `jobExists` dedup ensures only genuinely new postings flow through the pipeline.
 
 **Keyword filtering:** Job titles are matched against include keywords (e.g. `software engineer`, `frontend`, `react`, `typescript`) and exclude keywords (e.g. `manager`, `data scientist`, `intern`). Exclude takes priority.
+
+**Staleness filter:** Jobs posted more than 14 days ago are skipped (not scored) since response rates drop significantly after the first two weeks. They are still tracked in the database for deduplication.
+
+**DB pruning:** Runs automatically at the start of each monitor cycle. Job descriptions are nulled after 30 days (reclaims storage) and jobs are soft-archived after 90 days (excluded from scoring and notifications, but still used for dedup). Thresholds are configurable via `STALENESS_THRESHOLD_DAYS`, `DESCRIPTION_PRUNE_DAYS`, and `ARCHIVE_DAYS` in `config.ts`.
 
 ## Getting Started
 

@@ -100,11 +100,19 @@ Set the deployed Worker URL as the Interactions Endpoint URL in Discord Develope
 
 ## Project Commands
 
-- `yarn monitor` — run the job monitor
+- `yarn monitor` — run the job monitor (prunes stale data, then ingests new jobs with staleness filter)
 - `yarn score` — run AI fit scoring on unscored jobs
-- `yarn notify` — send Discord notifications for high-scoring jobs
+- `yarn notify` — send Discord notifications for high-scoring jobs (includes age badge)
 - `yarn run-all` — run monitor, score, and notify in sequence
 - `yarn alert` — send pipeline error alert to Discord (used by CI)
 - `yarn format` — format with prettier
 - `yarn lint` — lint with eslint
 - `npx tsc --noEmit` — type check
+
+## Staleness & Pruning
+
+- **Staleness filter** (`STALENESS_THRESHOLD_DAYS = 14`): Jobs posted >14 days ago are inserted for dedup but not scored (`passed_filter = 0`). Null/unparseable dates pass the check.
+- **Description pruning** (`DESCRIPTION_PRUNE_DAYS = 30`): Descriptions are nulled after 30 days to reclaim storage.
+- **Soft archive** (`ARCHIVE_DAYS = 90`): Jobs are archived after 90 days — excluded from scoring/notifications but still used for deduplication.
+- Pruning runs automatically at the start of every `yarn monitor` call. Uses `COALESCE(posted_at, first_seen_at)` as the reference date.
+- Note: Greenhouse exposes `updated_at` (not `created_at`), so edited jobs may appear fresher than their actual post date.
