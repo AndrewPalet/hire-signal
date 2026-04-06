@@ -104,10 +104,15 @@ Set the deployed Worker URL as the Interactions Endpoint URL in Discord Develope
 - `yarn score` — run AI fit scoring on unscored jobs
 - `yarn notify` — send Discord notifications for high-scoring jobs (includes age badge)
 - `yarn run-all` — run monitor, score, and notify in sequence
+- `yarn discover` — scan ATS slug lists for new companies to add (manual, see `scripts/discover.ts`)
 - `yarn alert` — send pipeline error alert to Discord (used by CI)
 - `yarn format` — format with prettier
 - `yarn lint` — lint with eslint
 - `npx tsc --noEmit` — type check
+
+## Company List
+
+Companies are defined in `config/companies.json` (not in config.ts). Each entry has `name`, `id` (ATS slug), `seed`, `source` (ATS platform), and optional `sector`. The discovery script (`scripts/discover.ts`) scans 15K+ ATS slugs from `data/ats-slugs/` and outputs candidates to `data/discovery-results.json` for review.
 
 ## Staleness & Pruning
 
