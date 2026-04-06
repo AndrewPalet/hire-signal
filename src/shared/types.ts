@@ -27,6 +27,7 @@ export interface JobRow {
   scored_at?: string | null;
   seen_at?: string | null;
   discord_message_id?: string | null;
+  archived_at?: string | null;
 }
 
 export interface ScoreResult {
@@ -43,7 +44,7 @@ export interface ScoreResult {
   dealbreaker: string | null;
 }
 
-export type JobInput = Omit<JobRow, 'first_seen_at' | 'applied' | 'notified'>;
+export type JobInput = Omit<JobRow, 'first_seen_at' | 'applied' | 'notified' | 'archived_at'>;
 
 export interface DbStats {
   total: number;

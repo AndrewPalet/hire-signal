@@ -2,7 +2,7 @@ import 'dotenv/config';
 import pLimit from 'p-limit';
 import { COMPANIES, type Company } from '../shared/config.js';
 import { createDatabase, type DatabaseAdapter } from '../shared/db.js';
-import { passesFilter } from './filter.js';
+import { passesFilter, isFreshEnough } from './filter.js';
 import { getFetcher } from './fetcher.js';
 
 const CONCURRENCY = 15;
@@ -57,7 +57,7 @@ async function processCompany(company: Company, db: DatabaseAdapter): Promise<Co
         continue;
       }
 
-      const passes = passesFilter(listing.title);
+      const passes = passesFilter(listing.title) && isFreshEnough(listing.postedAt);
 
       await db.insertJob({
         id,
@@ -107,6 +107,14 @@ async function processCompany(company: Company, db: DatabaseAdapter): Promise<Co
 
 async function main() {
   const db = await createDatabase();
+
+  const pruneResult = await db.prune();
+  if (pruneResult.descriptionsNulled > 0 || pruneResult.archived > 0) {
+    console.log(
+      `  Pruned: ${pruneResult.descriptionsNulled} descriptions nulled, ${pruneResult.archived} jobs archived\n`,
+    );
+  }
+
   const limit = pLimit(CONCURRENCY);
 
   const runTime = new Date().toISOString();
@@ -155,7 +163,9 @@ async function main() {
       const m = allMatches[i];
       console.log(`  [${i + 1}] ${m.company} — ${m.title}`);
       console.log(`      Location: ${m.location}`);
-      console.log(`      Posted:   ${m.postedAt ? new Date(m.postedAt).toLocaleString('en-US', { timeZone: 'America/Chicago', dateStyle: 'medium', timeStyle: 'short' }) : 'Unknown'}`);
+      console.log(
+        `      Posted:   ${m.postedAt ? new Date(m.postedAt).toLocaleString('en-US', { timeZone: 'America/Chicago', dateStyle: 'medium', timeStyle: 'short' }) : 'Unknown'}`,
+      );
       console.log(`      URL:      ${m.url}`);
       console.log('');
     }

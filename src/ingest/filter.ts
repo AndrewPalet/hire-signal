@@ -1,4 +1,4 @@
-import { EXCLUDE_KEYWORDS, INCLUDE_KEYWORDS } from '../shared/config.js';
+import { EXCLUDE_KEYWORDS, INCLUDE_KEYWORDS, STALENESS_THRESHOLD_DAYS } from '../shared/config.js';
 
 export function passesFilter(title: string): boolean {
   const lower = title.toLowerCase();
@@ -12,4 +12,13 @@ export function passesFilter(title: string): boolean {
   }
 
   return false;
+}
+
+export function isFreshEnough(postedAt: string | null): boolean {
+  if (!postedAt) return true;
+  const posted = new Date(postedAt);
+  if (isNaN(posted.getTime())) return true;
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - STALENESS_THRESHOLD_DAYS);
+  return posted >= cutoff;
 }

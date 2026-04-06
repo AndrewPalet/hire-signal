@@ -2,7 +2,14 @@ import Database from 'better-sqlite3';
 import { createClient, type Client } from '@libsql/client';
 import { mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
-import { DB_PATH, DB_BACKEND, TURSO_DATABASE_URL, TURSO_AUTH_TOKEN } from './config.js';
+import {
+  DB_PATH,
+  DB_BACKEND,
+  TURSO_DATABASE_URL,
+  TURSO_AUTH_TOKEN,
+  DESCRIPTION_PRUNE_DAYS,
+  ARCHIVE_DAYS,
+} from './config.js';
 import type { JobRow, ScoreResult, JobInput, DbStats } from './types.js';
 
 export type { JobRow, ScoreResult, JobInput, DbStats };
@@ -20,6 +27,7 @@ export interface DatabaseAdapter {
   markJobsNotified(ids: string[]): Promise<void>;
   markJobSeen(id: string): Promise<boolean>;
   setDiscordMessageId(jobIds: string[], messageId: string): Promise<void>;
+  prune(): Promise<{ descriptionsNulled: number; archived: number }>;
   getStats(): Promise<DbStats>;
   close(): Promise<void>;
 }
@@ -66,6 +74,7 @@ const SCORING_COLUMNS = [
   'scored_at TEXT',
   'seen_at TEXT',
   'discord_message_id TEXT',
+  'archived_at TEXT',
 ];
 
 // ── LocalDatabase (better-sqlite3) ─────────────────────────────────────
@@ -133,7 +142,7 @@ class LocalDatabase implements DatabaseAdapter {
     return this.db
       .prepare(
         `SELECT * FROM jobs
-       WHERE passed_filter = 1 AND is_seed = 0 AND scored_at IS NULL
+       WHERE passed_filter = 1 AND is_seed = 0 AND scored_at IS NULL AND archived_at IS NULL
        LIMIT ?`,
       )
       .all(limit) as JobRow[];
@@ -164,7 +173,7 @@ class LocalDatabase implements DatabaseAdapter {
     return this.db
       .prepare(
         `SELECT * FROM jobs
-       WHERE overall_score >= 7 AND notified = 0
+       WHERE overall_score >= 7 AND notified = 0 AND archived_at IS NULL
        ORDER BY company_name, overall_score DESC`,
       )
       .all() as JobRow[];
@@ -207,6 +216,29 @@ class LocalDatabase implements DatabaseAdapter {
       }
     ).c;
     return { total, filtered, seeded, scored };
+  }
+
+  async prune(): Promise<{ descriptionsNulled: number; archived: number }> {
+    const nullResult = this.db
+      .prepare(
+        `UPDATE jobs SET description = NULL
+       WHERE COALESCE(posted_at, first_seen_at) < datetime('now', '-${DESCRIPTION_PRUNE_DAYS} days')
+       AND description IS NOT NULL`,
+      )
+      .run();
+
+    const archiveResult = this.db
+      .prepare(
+        `UPDATE jobs SET archived_at = datetime('now')
+       WHERE COALESCE(posted_at, first_seen_at) < datetime('now', '-${ARCHIVE_DAYS} days')
+       AND archived_at IS NULL`,
+      )
+      .run();
+
+    return {
+      descriptionsNulled: nullResult.changes,
+      archived: archiveResult.changes,
+    };
   }
 
   async close(): Promise<void> {
@@ -302,7 +334,7 @@ class TursoDatabase implements DatabaseAdapter {
   async getUnscoredJobs(limit = 50): Promise<JobRow[]> {
     const result = await this.client.execute({
       sql: `SELECT * FROM jobs
-       WHERE passed_filter = 1 AND is_seed = 0 AND scored_at IS NULL
+       WHERE passed_filter = 1 AND is_seed = 0 AND scored_at IS NULL AND archived_at IS NULL
        LIMIT ?`,
       args: [limit],
     });
@@ -345,7 +377,7 @@ class TursoDatabase implements DatabaseAdapter {
   async getNotifiableJobs(): Promise<JobRow[]> {
     const result = await this.client.execute(
       `SELECT * FROM jobs
-       WHERE overall_score >= 7 AND notified = 0
+       WHERE overall_score >= 7 AND notified = 0 AND archived_at IS NULL
        ORDER BY company_name, overall_score DESC`,
     );
     return result.rows.map(rowToJobRow);
@@ -392,6 +424,25 @@ class TursoDatabase implements DatabaseAdapter {
     };
   }
 
+  async prune(): Promise<{ descriptionsNulled: number; archived: number }> {
+    const nullResult = await this.client.execute(
+      `UPDATE jobs SET description = NULL
+       WHERE COALESCE(posted_at, first_seen_at) < datetime('now', '-${DESCRIPTION_PRUNE_DAYS} days')
+       AND description IS NOT NULL`,
+    );
+
+    const archiveResult = await this.client.execute(
+      `UPDATE jobs SET archived_at = datetime('now')
+       WHERE COALESCE(posted_at, first_seen_at) < datetime('now', '-${ARCHIVE_DAYS} days')
+       AND archived_at IS NULL`,
+    );
+
+    return {
+      descriptionsNulled: Number(nullResult.rowsAffected),
+      archived: Number(archiveResult.rowsAffected),
+    };
+  }
+
   async close(): Promise<void> {
     this.client.close();
   }
@@ -429,6 +480,7 @@ function rowToJobRow(row: Record<string, unknown>): JobRow {
     scored_at: row.scored_at == null ? null : String(row.scored_at),
     seen_at: row.seen_at == null ? null : String(row.seen_at),
     discord_message_id: row.discord_message_id == null ? null : String(row.discord_message_id),
+    archived_at: row.archived_at == null ? null : String(row.archived_at),
   };
 }
 

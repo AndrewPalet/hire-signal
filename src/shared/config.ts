@@ -313,6 +313,10 @@ export const SCORING_BRIEF_PATH = 'profile/scoring-brief.md';
 
 export const NOTIFICATION_THRESHOLD = 7;
 
+export const STALENESS_THRESHOLD_DAYS = 14;
+export const DESCRIPTION_PRUNE_DAYS = 30;
+export const ARCHIVE_DAYS = 90;
+
 export const DISCORD_ERROR_WEBHOOK_URL = process.env.DISCORD_ERROR_WEBHOOK_URL ?? '';
 export const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN ?? '';
 export const DISCORD_CHANNEL_ID = process.env.DISCORD_CHANNEL_ID ?? '';

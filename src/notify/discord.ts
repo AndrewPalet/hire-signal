@@ -52,9 +52,29 @@ function truncate(str: string, max: number): string {
   return str.slice(0, max - 3) + '...';
 }
 
+function relativeAge(postedAt: string | null): string | null {
+  if (!postedAt) return null;
+  const posted = new Date(postedAt);
+  if (isNaN(posted.getTime())) return null;
+  const diffMs = Date.now() - posted.getTime();
+  if (diffMs < 0) return null;
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  if (diffHours < 1) return 'just now';
+  if (diffHours < 24) return `${diffHours}h ago`;
+  const diffDays = Math.floor(diffHours / 24);
+  if (diffDays === 1) return '1d ago';
+  return `${diffDays}d ago`;
+}
+
 function buildJobField(job: JobRow): { name: string; value: string } {
+  const age = relativeAge(job.posted_at);
+  const locationPart = job.location ? `📍 ${job.location}` : null;
+  const agePart = age ? `🕐 Posted ${age}` : null;
+  const contextLine =
+    locationPart && agePart ? `${locationPart}  ·  ${agePart}` : (locationPart ?? agePart);
+
   const lines = [
-    job.location ? `📍 ${job.location}` : null,
+    contextLine,
     `Fit: ${job.role_fit_score ?? '?'} | Loc: ${job.location_score ?? '?'} | Stack: ${job.stack_score ?? '?'} | Comp: ${job.comp_score ?? '?'} | **Overall: ${job.overall_score ?? '?'}**`,
     job.overall_reasoning ? `> ${job.overall_reasoning}` : null,
     `[Apply →](${job.url})`,
