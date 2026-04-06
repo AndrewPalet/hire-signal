@@ -12,53 +12,71 @@ async function main() {
   }
 
   const db = await createDatabase();
-  const jobs = await db.getNotifiableJobs();
 
   const runTime = new Date().toISOString();
-  console.log('====================================================');
-  console.log(`  Job Notifier Run: ${runTime}`);
-  console.log(`  Notifiable jobs: ${jobs.length}`);
-  console.log('====================================================\n');
+  const MAX_ROUNDS = 10;
+  let totalNotified = 0;
+  let totalFailed = 0;
+  let totalBatchesSent = 0;
+  let round = 0;
 
-  if (jobs.length === 0) {
-    console.log('  No notifiable jobs found. Nothing to do.');
-    await db.close();
-    return;
-  }
+  // Drain loop: keep sending until all notifiable jobs are delivered
+  while (round < MAX_ROUNDS) {
+    round++;
+    const jobs = await db.getNotifiableJobs();
 
-  const batches = buildBatches(jobs);
-  const results = await sendBotBatches(botToken, channelId, batches);
-  const totalBatches = results.length;
-
-  let notified = 0;
-  let failed = 0;
-  let batchesSent = 0;
-
-  for (const result of results) {
-    if (result.success) {
-      batchesSent++;
-      console.log(`  Sending batch ${result.batch}/${totalBatches}... ✓`);
-      // Store discord message ID for all jobs in this batch
-      if (result.messageId && result.jobIds) {
-        await db.setDiscordMessageId(result.jobIds, result.messageId);
-      }
-      // Mark jobs as notified
-      if (result.jobIds) {
-        await db.markJobsNotified(result.jobIds);
-        notified += result.jobIds.length;
-      }
-    } else {
-      console.log(
-        `  Sending batch ${result.batch}/${totalBatches}... ✗ (status: ${result.status ?? 'unknown'})`,
-      );
-      failed += result.jobIds?.length ?? 0;
+    if (round === 1) {
+      console.log('====================================================');
+      console.log(`  Job Notifier Run: ${runTime}`);
+      console.log(`  Notifiable jobs: ${jobs.length}`);
+      console.log('====================================================\n');
     }
+
+    if (jobs.length === 0) {
+      if (round === 1) {
+        console.log('  No notifiable jobs found. Nothing to do.');
+      }
+      break;
+    }
+
+    if (round > 1) {
+      console.log(`\n  Round ${round}: ${jobs.length} remaining jobs...\n`);
+    }
+
+    const batches = buildBatches(jobs);
+    const results = await sendBotBatches(botToken, channelId, batches);
+    const totalBatches = results.length;
+
+    let roundNotified = 0;
+    for (const result of results) {
+      if (result.success) {
+        totalBatchesSent++;
+        console.log(`  Sending batch ${result.batch}/${totalBatches}... ✓`);
+        if (result.messageId && result.jobIds) {
+          await db.setDiscordMessageId(result.jobIds, result.messageId);
+        }
+        if (result.jobIds) {
+          await db.markJobsNotified(result.jobIds);
+          totalNotified += result.jobIds.length;
+          roundNotified += result.jobIds.length;
+        }
+      } else {
+        console.log(
+          `  Sending batch ${result.batch}/${totalBatches}... ✗ (status: ${result.status ?? 'unknown'})`,
+        );
+        totalFailed += result.jobIds?.length ?? 0;
+      }
+    }
+
+    // If nothing was sent this round, stop to avoid infinite loop
+    if (roundNotified === 0) break;
   }
 
   console.log('\n────────────────────────────────────────────────────');
-  console.log(`  Notified:      ${notified} jobs`);
-  console.log(`  Failed:        ${failed} jobs`);
-  console.log(`  Batches sent:  ${batchesSent}`);
+  console.log(`  Notified:      ${totalNotified} jobs`);
+  console.log(`  Failed:        ${totalFailed} jobs`);
+  console.log(`  Batches sent:  ${totalBatchesSent}`);
+  if (round > 1) console.log(`  Rounds:        ${round}`);
   console.log('====================================================');
 
   await db.close();

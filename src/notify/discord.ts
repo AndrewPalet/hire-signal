@@ -139,18 +139,22 @@ export function buildEmbeds(jobs: JobRow[]): DiscordEmbed[] {
   }
 
   if (miscJobs.length > 0) {
-    const topScore = Math.max(...miscJobs.map((j) => j.overall_score ?? 0));
-    embeds.push(
-      truncateEmbed({
-        title: 'New Job Matches',
-        color: scoreColor(topScore),
-        fields: miscJobs.map((job) => {
-          const field = buildJobField(job);
-          return { ...field, name: `${job.company_name} — ${field.name}` };
+    const MAX_FIELDS_PER_EMBED = 5;
+    for (let i = 0; i < miscJobs.length; i += MAX_FIELDS_PER_EMBED) {
+      const chunk = miscJobs.slice(i, i + MAX_FIELDS_PER_EMBED);
+      const topScore = Math.max(...chunk.map((j) => j.overall_score ?? 0));
+      embeds.push(
+        truncateEmbed({
+          title: 'New Job Matches',
+          color: scoreColor(topScore),
+          fields: chunk.map((job) => {
+            const field = buildJobField(job);
+            return { ...field, name: `${job.company_name} — ${field.name}` };
+          }),
+          footer: { text: FOOTER_TEXT },
         }),
-        footer: { text: FOOTER_TEXT },
-      }),
-    );
+      );
+    }
   }
 
   return embeds;
