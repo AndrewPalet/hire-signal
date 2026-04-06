@@ -35,7 +35,7 @@
   "files.insertFinalNewline": true,
   "files.exclude": {
     "**/node_modules": true,
-    "**/data": true,
+    "**/data": false,
     "**/.git": true
   },
 
