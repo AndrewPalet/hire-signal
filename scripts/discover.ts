@@ -22,7 +22,7 @@ import { getFetcher } from '../src/ingest/fetcher.js';
 import { passesFilter, isFreshEnough } from '../src/ingest/filter.js';
 import type { AtsSource } from '../src/shared/config.js';
 
-const CONCURRENCY = 10;
+const CONCURRENCY = 20;
 const SLUG_DIR = resolve('data/ats-slugs');
 const OUTPUT_PATH = resolve('data/discovery-results.json');
 
