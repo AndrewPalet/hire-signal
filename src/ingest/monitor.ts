@@ -5,7 +5,7 @@ import { createDatabase, type DatabaseAdapter } from '../shared/db.js';
 import { passesFilter, isFreshEnough } from './filter.js';
 import { getFetcher } from './fetcher.js';
 
-const CONCURRENCY = 15;
+const CONCURRENCY = 20;
 
 interface MatchInfo {
   title: string;
