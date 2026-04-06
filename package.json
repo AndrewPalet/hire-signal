@@ -11,7 +11,8 @@
     "alert": "tsx src/shared/alert.ts",
     "lint": "eslint src/",
     "format": "prettier --write src/",
-    "format:check": "prettier --check src/"
+    "format:check": "prettier --check src/",
+    "discover": "tsx scripts/discover.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
