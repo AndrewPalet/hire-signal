@@ -155,7 +155,7 @@ async function main() {
       const m = allMatches[i];
       console.log(`  [${i + 1}] ${m.company} — ${m.title}`);
       console.log(`      Location: ${m.location}`);
-      console.log(`      Posted:   ${m.postedAt}`);
+      console.log(`      Posted:   ${m.postedAt ? new Date(m.postedAt).toLocaleString('en-US', { timeZone: 'America/Chicago', dateStyle: 'medium', timeStyle: 'short' }) : 'Unknown'}`);
       console.log(`      URL:      ${m.url}`);
       console.log('');
     }

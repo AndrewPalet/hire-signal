@@ -130,6 +130,7 @@ export const COMPANIES: Company[] = [
   { name: 'Orum', id: 'orum', seed: false, source: 'ashby' },
   { name: 'Runway', id: 'runway', seed: false, source: 'ashby' },
   { name: 'BrightHire', id: 'brighthire', seed: false, source: 'greenhouse' },
+  { name: 'Builder.io', id: 'builder', seed: false, source: 'greenhouse' },
   { name: 'Jellyfish', id: 'jellyfish', seed: false, source: 'ashby' },
   { name: 'ZenBusiness', id: 'zenbusiness', seed: false, source: 'greenhouse' },
   { name: 'B12', id: 'b12', seed: false, source: 'greenhouse' },
@@ -161,6 +162,7 @@ export const COMPANIES: Company[] = [
   { name: 'Zocdoc', id: 'zocdoc', seed: false, source: 'greenhouse' },
   { name: 'Whatnot', id: 'whatnot', seed: false, source: 'ashby' },
   { name: 'Vetcove', id: 'vetcove', seed: false, source: 'ashby' },
+  { name: 'Peerspace', id: 'peerspace', seed: false, source: 'lever' },
   { name: 'Andela', id: 'andela', seed: false, source: 'ashby' },
   { name: 'Calm', id: 'calm', seed: false, source: 'greenhouse' },
   { name: 'Cameo', id: 'cameo', seed: false, source: 'greenhouse' },
@@ -252,6 +254,7 @@ export const COMPANIES: Company[] = [
   { name: 'Care Access', id: 'careaccess', seed: false, source: 'greenhouse' },
   { name: 'Onebrief', id: 'onebrief', seed: false, source: 'ashby' },
   { name: 'Mode Mobile', id: 'modemobile', seed: false, source: 'greenhouse' },
+  { name: 'PermitFlow', id: 'permitflow', seed: false, source: 'ashby' },
 ];
 
 export const INCLUDE_KEYWORDS: string[] = [
