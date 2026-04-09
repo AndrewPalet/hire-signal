@@ -3120,5 +3120,19 @@
     "seed": false,
     "source": "greenhouse",
     "sector": "consumer-marketplace"
+  },
+  {
+    "name": "Kindred",
+    "id": "kindred",
+    "seed": false,
+    "source": "ashby",
+    "sector": "consumer-marketplace"
+  },
+  {
+    "name": "Future",
+    "id": "future",
+    "seed": false,
+    "source": "greenhouse",
+    "sector": "health-tech"
   }
 ]
