@@ -868,13 +868,6 @@
     "sector": "design-productivity"
   },
   {
-    "name": "Grammarly",
-    "id": "grammarly",
-    "seed": false,
-    "source": "greenhouse",
-    "sector": "design-productivity"
-  },
-  {
     "name": "Mattermost",
     "id": "mattermost",
     "seed": false,
@@ -1358,13 +1351,6 @@
     "sector": "infrastructure"
   },
   {
-    "name": "Shippo",
-    "id": "shippo",
-    "seed": false,
-    "source": "lever",
-    "sector": "infrastructure"
-  },
-  {
     "name": "Stedi",
     "id": "stedi",
     "seed": false,
@@ -1662,7 +1648,7 @@
     "name": "HeyGen",
     "id": "heygen",
     "seed": false,
-    "source": "ashby",
+    "source": "greenhouse",
     "sector": "ai"
   },
   {
@@ -1704,12 +1690,12 @@
     "name": "Typeface",
     "id": "typeface",
     "seed": false,
-    "source": "ashby",
+    "source": "greenhouse",
     "sector": "ai"
   },
   {
     "name": "Hebbia",
-    "id": "hebbia",
+    "id": "hebbia-ai",
     "seed": false,
     "source": "ashby",
     "sector": "ai"
@@ -1760,7 +1746,7 @@
     "name": "Speechify",
     "id": "speechify",
     "seed": false,
-    "source": "ashby",
+    "source": "greenhouse",
     "sector": "ai"
   },
   {
@@ -1816,7 +1802,7 @@
     "name": "Hive",
     "id": "hive",
     "seed": false,
-    "source": "ashby",
+    "source": "lever",
     "sector": "ai"
   },
   {
@@ -2082,7 +2068,7 @@
     "name": "ngrok",
     "id": "ngrokinc",
     "seed": false,
-    "source": "ashby",
+    "source": "greenhouse",
     "sector": "infrastructure"
   },
   {
@@ -2236,7 +2222,7 @@
     "name": "ZipRecruiter",
     "id": "ziprecruiter",
     "seed": false,
-    "source": "ashby",
+    "source": "greenhouse",
     "sector": "consumer-marketplace"
   },
   {
@@ -2467,7 +2453,7 @@
     "name": "Moloco",
     "id": "moloco",
     "seed": false,
-    "source": "ashby",
+    "source": "greenhouse",
     "sector": "saas"
   },
   {
@@ -2481,14 +2467,14 @@
     "name": "Later",
     "id": "later",
     "seed": false,
-    "source": "ashby",
+    "source": "greenhouse",
     "sector": "saas"
   },
   {
     "name": "FloQast",
     "id": "floqast",
     "seed": false,
-    "source": "ashby",
+    "source": "lever",
     "sector": "saas"
   },
   {
@@ -2530,7 +2516,7 @@
     "name": "BuildOps",
     "id": "buildops",
     "seed": false,
-    "source": "ashby",
+    "source": "greenhouse",
     "sector": "saas"
   },
   {
@@ -2698,7 +2684,7 @@
     "name": "Clear Street",
     "id": "clearstreet",
     "seed": false,
-    "source": "ashby",
+    "source": "greenhouse",
     "sector": "consumer-finance"
   },
   {
@@ -2733,7 +2719,7 @@
     "name": "GoodLeap",
     "id": "goodleap",
     "seed": false,
-    "source": "ashby",
+    "source": "lever",
     "sector": "consumer-finance"
   },
   {
@@ -2775,7 +2761,7 @@
     "name": "Check",
     "id": "check",
     "seed": false,
-    "source": "ashby",
+    "source": "greenhouse",
     "sector": "payments"
   },
   {
@@ -2922,21 +2908,21 @@
     "name": "Aledade",
     "id": "aledade",
     "seed": false,
-    "source": "ashby",
+    "source": "lever",
     "sector": "health-tech"
   },
   {
     "name": "Maven Clinic",
     "id": "mavenclinic",
     "seed": false,
-    "source": "ashby",
+    "source": "greenhouse",
     "sector": "health-tech"
   },
   {
     "name": "Charlie Health",
     "id": "charliehealth",
     "seed": false,
-    "source": "ashby",
+    "source": "greenhouse",
     "sector": "health-tech"
   },
   {
@@ -2957,7 +2943,7 @@
     "name": "NexHealth",
     "id": "nexhealth",
     "seed": false,
-    "source": "ashby",
+    "source": "greenhouse",
     "sector": "health-tech"
   },
   {
@@ -3134,5 +3120,12 @@
     "seed": false,
     "source": "greenhouse",
     "sector": "health-tech"
+  },
+  {
+    "name": "Timely",
+    "id": "timely",
+    "seed": false,
+    "source": "ashby",
+    "sector": "saas"
   }
 ]
