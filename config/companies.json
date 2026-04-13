@@ -3127,5 +3127,19 @@
     "seed": false,
     "source": "ashby",
     "sector": "saas"
+  },
+  {
+    "name": "Counsel",
+    "id": "counsel",
+    "seed": false,
+    "source": "ashby",
+    "sector": "health-tech"
+  },
+  {
+    "name": "Wrapbook",
+    "id": "wrapbook",
+    "seed": false,
+    "source": "ashby",
+    "sector": "saas"
   }
 ]
