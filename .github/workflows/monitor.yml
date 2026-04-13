@@ -1,13 +1,13 @@
 name: Job Monitor Pipeline
 
 on:
-  schedule:
-    # Mon-Wed: 8 AM CT and 1 PM CT
-    - cron: '0 13,18 * * 1,2,3'
-    # Thu-Fri: 8 AM CT only
-    - cron: '0 13 * * 4,5'
-    # Sunday: 6 PM CT
-    - cron: '0 23 * * 0'
+  # schedule:
+  #   # Mon-Wed: 8 AM CT and 1 PM CT
+  #   - cron: '0 13,18 * * 1,2,3'
+  #   # Thu-Fri: 8 AM CT only
+  #   - cron: '0 13 * * 4,5'
+  #   # Sunday: 6 PM CT
+  #   - cron: '0 23 * * 0'
   workflow_dispatch:
 
 concurrency:
