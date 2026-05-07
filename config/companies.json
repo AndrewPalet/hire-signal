@@ -3141,5 +3141,12 @@
     "seed": false,
     "source": "ashby",
     "sector": "saas"
+  },
+  {
+    "name": "The Browser Company",
+    "id": "the browser company",
+    "seed": false,
+    "source": "ashby",
+    "sector": "design-productivity"
   }
 ]
