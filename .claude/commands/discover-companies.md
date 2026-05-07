@@ -55,6 +55,7 @@ Important:
 - Deduplicate against existing entries in `config/companies.json`
 - Use proper capitalization for the `name` field (e.g., "DoorDash" not "doordashusa")
 - Pick the most appropriate `sector` value
+- The `id` can contain spaces (e.g. `"the browser company"` for Ashby) — Node's `fetch` auto-encodes the URL path, so store the slug verbatim
 
 ### 5. Verify
 
